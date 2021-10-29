@@ -1,0 +1,23 @@
+
+
+1. Chức năng dành cho IP Blacklist
+- Sửa, xóa, tìm kiếm
+- show list danh sách (download file dạng xls)
+- Các trường cho IP bao gồm: Ngày tháng nhập, IP, mô tả
+- Thêm: 
+	+ Đếm số lần xuất hiện của ip đó (sắp xếp theo số lần xuất hiện cho lần thêm đó)
+	+ Lọc IP chưa xuất hiện lần nào 
+	+ có chức năng xuất file xls or txt (txt nếu đc thì xuất Ip thôi cũng oke)
+	
+
+2. Chức năng dành cho IP vlan
+- thêm, sửa, xóa
+- tìm kiếm (sau đó có thể có nút để cập nhật thông tin)
+- Thêm: 
+	+ các trường của 1 IP có thể được thay đổi.
+- Có thể có chức năng lọc, nhóm, sắp xếp theo các trường. (như kiểu trong excel)
+
+
+
+... Nếu như có chức năng đăng nhập, quyền (view, chỉnh sửa nữa thì càng tốt)
+	
