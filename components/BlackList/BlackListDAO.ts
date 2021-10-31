@@ -1,17 +1,19 @@
-//MongoDB: https://www.w3schools.com/nodejs/nodejs_mongodb.asp
+import { Schema, model, connect } from 'mongoose';
+import dotenv from "dotenv";
+import { BlackListModel } from '../Utils/Global_Models';
 
-const mongoDB = require("mongodb").MongoClient;
-const DB_URL = "mongodb://localhost:21017/thao_ip_manager/";
+dotenv.config({
+    path: __dirname + "/../../.env"
+});
 
-let init: Function =  () => {
-    mongoDB.connect(DB_URL, function (err: any, db: any) {
-        if (err) {
-            console.log("Have an error when connect to Database. Trying to reconnect...");
-            init();
-            return;
-        }
-        var blDB = db.db('blacklist');
-    });
+const MONGO_DB_BASEURL  : string = process.env.MONGO_URL as string          || "mongodb://localhost:27017/";
+const MONGO_DB_NAME     : string = process.env.MONGO_DB_NAME as string      || "thao_ip_manager";
+
+export const CreateOneBlackList: Function = async (ip: string, desc?: string, create_time?: number): Promise<void> => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    await new BlackListModel({
+        "ip": ip,
+        "desc": desc,
+        "create_time": create_time
+    }).save();
 }
-
-init();

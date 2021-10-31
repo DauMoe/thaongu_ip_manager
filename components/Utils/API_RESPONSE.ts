@@ -1,25 +1,27 @@
 import {Response} from "express";
 
-export const RespCustomCode: Function = (resp: Response, code: number, data: any, isBreak: boolean = true): void => {
+export const RespCustomCode: Function = (resp: Response, code: number, data: any, isBreak: boolean = true): Response => {
+    resp.statusCode = 200;
     resp.send({
         "code": code,
         "msg": data
     });
-    if (isBreak) return;
+    return resp;
 }
 
-export const MissingField: Function = (resp: Response, field: string): void => {
+export const MissingField: Function = (resp: Response, field: string): Response => {
+    resp.statusCode = 200;
     resp.send({
         "code": 403,
         "msg": [`\"'${field}' is required!\"`]
     })
-    return;
+    return resp;
 }
 
-export const SuccessResp: Function = (resp: Response, data: any, isBreak: boolean = true): void => {
-    RespCustomCode(resp, 200, data, isBreak);
+export const SuccessResp: Function = (resp: Response, data: any, isBreak: boolean = true): Response => {
+    return RespCustomCode(resp, 200, data, isBreak);
 }
 
-export const C201Resp: Function = (resp: Response, data: any, isBreak: boolean = true): void => {
-    RespCustomCode(resp, 201, data, isBreak);
+export const C201Resp: Function = (resp: Response, data: any, isBreak: boolean = true): Response => {
+    return RespCustomCode(resp, 201, data, isBreak);
 }
