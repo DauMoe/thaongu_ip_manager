@@ -1,1 +1,21 @@
 /node_modules
+/ip_fe/node_modules
+/ip_fe/.pnp
+/ip_fe/.pnp.js
+
+# testing
+/ip_fe//coverage
+
+# production
+/ip_fe//build
+
+# misc
+/ip_fe/.DS_Store
+/ip_fe/.env.local
+/ip_fe/.env.development.local
+/ip_fe/.env.test.local
+/ip_fe/.env.production.local
+
+/ip_fe/npm-debug.log*
+/ip_fe/yarn-debug.log*
+/ip_fe/yarn-error.log*
