@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
 import {C201Resp, MissingField, SuccessResp, Con4Java} from "../Utils/API_RESPONSE";
-import { BlackList } from "../Utils/Global_Interface";
 import {CreateOneBlackList, GetAllBlackList} from "./BlackListDAO";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
@@ -20,7 +19,8 @@ export const NewBlackList = async (req: Request, resp: Response): Promise<void> 
         CreateOneBlackList(ip, desc, create_time);
         SuccessResp(resp);
     } catch(e) {
-        C201Resp(resp, [e]);
+        console.log(e);
+        C201Resp(resp, ["\"Have an error in (BlackListservices.ts-NewBlackList)\""]);
     }
 }
 
@@ -48,7 +48,8 @@ export const GetBlackList = async (req: Request, resp: Response): Promise<void> 
                 "ip": Con4Java(BlackListIP.ip),
                 "desc": Con4Java(BlackListIP.desc),
                 "create_time": BlackListIP.create_time,
-                "last_update": BlackListIP.last_update
+                "createdAt": Con4Java(BlackListIP.createdAt),
+                "updatedAt": Con4Java(BlackListIP.updatedAt),
             });
         }
         SuccessResp(resp, resultData);

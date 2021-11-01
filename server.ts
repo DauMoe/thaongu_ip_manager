@@ -7,7 +7,6 @@ const fs                    = require("fs");
 const express               = require("express");
 const cors                  = require("cors");
 const dotenv                = require("dotenv");
-const mongoose              = require("mongoose");
 const app: Application      = express();
 
 /*      Variables declare   */

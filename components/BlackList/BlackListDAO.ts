@@ -2,7 +2,6 @@ import { Schema, model, connect, Model, Query, Document } from 'mongoose';
 import dotenv from "dotenv";
 import { BlackListSchema } from '../Utils/Global_Schema';
 import { BlackList } from './../Utils/Global_Interface';
-import { ObjectId } from 'mongodb';
 
 dotenv.config({
     path: __dirname + "/../../.env"
@@ -18,7 +17,7 @@ const MONGO_DB_NAME     : string = process.env.MONGO_DB_NAME as string      || "
 const _BL_MODEL         : string = process.env.BLACKLIST_MODEL as string    || 'blacklist';
 
 /*===== INSERT ====*/
-export const CreateOneBlackList: Function = async (ip: string, desc?: string, create_time?: number): Query<any, Document<BlackList>> => {
+export const CreateOneBlackList: Function = async (ip: string, desc?: string, create_time?: number) => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
     return await new BlackListModel({
@@ -33,7 +32,7 @@ export const GetAllBlackList:Function = async (id?: string, ip?: string, create_
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
     let options = {};
-    //Doc: https://anonystick.com/blog-developer/find-with-like-mongoose-2021010974190082
+
     if (id !== undefined) {
         //@ts-ignore
         options["_id"] = _EscapeReg(id)

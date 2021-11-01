@@ -13,12 +13,8 @@ export const BlackListSchema = new Schema<BlackList>({
     "desc": {
         type: String,
         default: ""
-    },
-    "last_update": {
-        type: Number,
-        default: Date.now
     }
-});
+}, {timestamps: true});
 
 export const VLANSchema = new Schema<VLAN>({
     "ip": {
@@ -29,9 +25,8 @@ export const VLANSchema = new Schema<VLAN>({
         type: Number,
         default: Date.now
     },
-    "desc": String,
-    "last_update": {
-        type: Number,
-        default: Date.now
+    "desc": {
+        type: String,
+        default: ""
     }
-});
+}, {timestamps: true});
