@@ -28,3 +28,7 @@ export const SuccessResp: Function = (resp: Response, data?: any, isBreak?: bool
 export const C201Resp: Function = (resp: Response, data: any): Response => {
     return RespCustomCode(resp, 201, data);
 }
+
+export const Con4Java: Function = (msg: string): string => {
+    return "\"" + msg + "\"";
+}
