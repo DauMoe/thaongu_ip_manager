@@ -7,8 +7,8 @@ export const BlackListSchema = new Schema<BlackList>({
         required: true
     },
     "create_time": {
-        type: Number,
-        default: Date.now
+        type: String,
+        default: ""
     },
     "desc": {
         type: String,
