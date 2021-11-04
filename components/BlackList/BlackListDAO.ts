@@ -28,7 +28,24 @@ export const CreateOneBlackList: Function = async (ip: string, desc?: string, cr
 }
 
 /*===== SELECT ====*/
-export const GetAllBlackList:Function = async (id?: string, ip?: string, create_time_from?: number, create_time_to?: number): Promise<any> => {
+export const GetAllBlackList:Function = async (offset: number, limit: number) => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
+    return BlackListModel
+        .find({})
+        .limit(limit)
+        .skip(offset)
+        .sort('createAt')
+        .exec();
+}
+
+export const CountBlackListDocuments: Function = async () => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
+    return BlackListModel.count({});
+}
+
+export const SearchBlackListIP:Function = async (id?: string, ip?: string, create_time_from?: number, create_time_to?: number): Promise<any> => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
     let options = {};
