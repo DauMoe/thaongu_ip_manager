@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
 import {C201Resp, MissingField, SuccessResp, Con4Java} from "../Utils/API_RESPONSE";
-import {CreateOneBlackList, GetAllBlackList, CountBlackListDocuments} from "./BlackListDAO";
+import {CreateOneBlackList, GetAllBlackList, CountBlackListDocuments, RemoveByID} from "./BlackListDAO";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
     let reqData: JSON = req.body;
@@ -58,6 +58,20 @@ export const GetBlackList = async (req: Request, resp: Response): Promise<void> 
     } catch(e) {
         console.log(e);
         C201Resp(resp, ["\"Have an error in (BlackListservices.ts-GetBlackList)\""]);
+    }
+}
+
+export const RemoveDocs = async (req: Request, resp: Response): Promise<void> => {
+    let reqData = req.body;
+
+    try {
+        if (!reqData.hasOwnProperty("id")) MissingField("id");
+        let id: string = reqData["id"] as string;
+        await RemoveByID(id);
+        SuccessResp(resp);
+    } catch(e) {
+        console.log(e);
+        C201Resp(resp, ["\"Have an error in (BlackListservices.ts-RemoveDocs)\""]);
     }
 }
 

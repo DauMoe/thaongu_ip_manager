@@ -2,6 +2,7 @@ import { Schema, model, connect, Model, Query, Document } from 'mongoose';
 import dotenv from "dotenv";
 import { BlackListSchema } from '../Utils/Global_Schema';
 import { BlackList } from './../Utils/Global_Interface';
+import {ObjectId} from "mongodb";
 
 dotenv.config({
     path: __dirname + "/../../.env"
@@ -43,6 +44,12 @@ export const CountBlackListDocuments: Function = async () => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
     return BlackListModel.count({});
+}
+
+export const RemoveByID: Function = async (id: string) => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
+    return BlackListModel.findByIdAndRemove(new ObjectId(id));
 }
 
 export const SearchBlackListIP:Function = async (id?: string, ip?: string, create_time_from?: number, create_time_to?: number): Promise<any> => {

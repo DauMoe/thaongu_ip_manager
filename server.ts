@@ -1,6 +1,6 @@
 import {Application, NextFunction, Request, Response} from "express";
 import * as _URL from './API_URL';
-import {NewBlackList, GetBlackList} from "./components/BlackList/BlackListServices";
+import {NewBlackList, GetBlackList, RemoveDocs} from "./components/BlackList/BlackListServices";
 // const BL_Services           = require("./components/BlackList/BlackListServices");
 const https                 = require("https");
 const http                  = require("http");
@@ -34,6 +34,7 @@ function CheckAuthMiddleWare(req: Request, resp: Response, next: NextFunction) {
 /*      API AREA    */
 app.post(_URL.BLACKLIST_ADD_IP, CheckAuthMiddleWare, NewBlackList);
 app.post(_URL.BLACKLIST_GET_IP, CheckAuthMiddleWare, GetBlackList);
+app.post(_URL.BLACKLIST_REMOVE_IP, CheckAuthMiddleWare, RemoveDocs);
 
 /*      Start server       */
 // httpsServer.listen(PORT, function(): void {
