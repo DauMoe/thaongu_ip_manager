@@ -30,5 +30,5 @@ export const C201Resp: Function = (resp: Response, data: any): Response => {
 }
 
 export const Con4Java: Function = (msg: string): string => {
-    return "\"" + msg + "\"";
+    return msg;
 }
