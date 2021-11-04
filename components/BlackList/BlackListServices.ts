@@ -51,7 +51,7 @@ export const GetBlackList = async (req: Request, resp: Response): Promise<void> 
             });
         }
         //@ts-ignore
-        resultData["result"] = BlackListIPArr;
+        resultData["list"] = BlackListIPArr;
         //@ts-ignore
         resultData["total"] = TotalDocs;
         SuccessResp(resp, resultData);
