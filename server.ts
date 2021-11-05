@@ -1,7 +1,7 @@
 import {Application, NextFunction, Request, Response} from "express";
 import multiparty from "multiparty-express";
 import * as _URL from './API_URL';
-import {NewBlackList, GetBlackList, RemoveDocs, EditDocs, NewBlackListExcel} from "./components/BlackList/BlackListServices";
+import {NewBlackList, GetBlackList, RemoveDocs, EditDocs, NewBlackListExcel, SearchByBlacklistIP} from "./components/BlackList/BlackListServices";
 
 const https                 = require("https");
 const http                  = require("http");
@@ -42,7 +42,8 @@ app.post(_URL.BLACKLIST_ADD_IP, CheckAuthMiddleWare, NewBlackList);
 app.post(_URL.BLACKLIST_GET_IP, CheckAuthMiddleWare, GetBlackList);
 app.post(_URL.BLACKLIST_REMOVE_IP, CheckAuthMiddleWare, RemoveDocs);
 app.post(_URL.BLACKLIST_EDIT_IP, CheckAuthMiddleWare, EditDocs);
-app.post(_URL.BLACKLIST_ADD_EXCEL, multiparty(), NewBlackListExcel);
+app.post(_URL.BLACKLIST_ADD_EXCEL, multiparty(), CheckAuthMiddleWare, NewBlackListExcel);
+app.post(_URL.BLACKLIST_SEARCH_IP, CheckAuthMiddleWare, SearchByBlacklistIP);
 
 /*      Start server       */
 // httpsServer.listen(PORT, function(): void {

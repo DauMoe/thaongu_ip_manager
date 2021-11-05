@@ -1,5 +1,7 @@
 import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
+import fs from "fs";
+import XLSX from "xlsx";
 import {C201Resp, MissingField, SuccessResp, Con4Java} from "../Utils/API_RESPONSE";
 import {
     CreateOneBlackList,
@@ -7,10 +9,8 @@ import {
     CountBlackListDocuments,
     RemoveByID,
     EditBlackList,
-    CreateManyBlackList
+    CreateManyBlackList, SearchBlackListIP
 } from "./BlackListDAO";
-import fs from "fs";
-import XLSX from "xlsx";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
     let reqData = req.body;
@@ -49,7 +49,7 @@ export const GetBlackList = async (req: Request, resp: Response): Promise<void> 
             return;
         }
 
-        let offset: number = 0, limit: number = 0;
+        let offset: number, limit: number;
         offset = reqData["offset"] as number;
         limit = reqData["limit"] as number;
 
@@ -132,7 +132,7 @@ export const EditDocs = async (req: Request, resp: Response): Promise<void> => {
     }
 }
 
-export const NewBlackListExcel = async (req: any, resp: any): Promise<void> => {
+export const NewBlackListExcel = async (req: Request, resp: Response): Promise<void> => {
     let path: string = req.files.blacklist_file[0].path;
     try {
         let workBooks = XLSX.readFile(path);
@@ -140,12 +140,18 @@ export const NewBlackListExcel = async (req: any, resp: any): Promise<void> => {
         const SampleKeyHeaders = ['ip', 'desc', 'create_time'];
         //@ts-ignore
         let KeyHeaders: string[] = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {defval: '', header: 1})[1];
+        let CompareKeyHeader = JSON.parse(JSON.stringify(KeyHeaders));
         for (let i of KeyHeaders) {
             i = i.trim();
             if (SampleKeyHeaders.indexOf(i) === -1) {
                 C201Resp(resp, ["Key headers must be 'ip', 'desc', 'create_time'"]);
                 return;
             }
+            CompareKeyHeader.splice(CompareKeyHeader.indexOf(i), 1);
+        }
+        if (CompareKeyHeader.length > 0) {
+            C201Resp(resp, ["File missing key headers " + JSON.stringify(CompareKeyHeader)]);
+            return;
         }
         let ExcelData = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {range: 2, header: KeyHeaders});
         await CreateManyBlackList(ExcelData);
@@ -156,6 +162,37 @@ export const NewBlackListExcel = async (req: any, resp: any): Promise<void> => {
     }
 }
 
-export const x = async (req: Request, resp: Response): Promise<void> => {
-    let reqData: JSON = req.body;
+export const SearchByBlacklistIP = async (req: Request, resp: Response): Promise<void> => {
+    let reqData = req.body;
+
+    try {
+        if (!reqData.hasOwnProperty("ip")) {
+            MissingField(resp, "ip");
+            return;
+        }
+
+        let ip                      = reqData["ip"] as string;
+        let BlackListIPs            = await SearchBlackListIP(undefined, ip);
+        let BlackListIPArr: any[]   = [];
+        let resultData              = {};
+
+        for (let BlackListIP of BlackListIPs) {
+            BlackListIPArr.push({
+                "id": Con4Java(new ObjectId(BlackListIP._id)),
+                "ip": Con4Java(BlackListIP.ip),
+                "desc": Con4Java(BlackListIP.desc),
+                "create_time": BlackListIP.create_time,
+                "createdAt": Con4Java(BlackListIP.createdAt),
+                "updatedAt": Con4Java(BlackListIP.updatedAt),
+            });
+        }
+        //@ts-ignore
+        resultData["list"] = BlackListIPArr;
+        //@ts-ignore
+        resultData["total"] = BlackListIPArr.length;
+        SuccessResp(resp, resultData);
+    } catch (e) {
+        console.log("BlackListServices.ts - SearchByBlacklistIP: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - SearchByBlacklistIP)\""]);
+    }
 }
