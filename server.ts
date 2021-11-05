@@ -20,9 +20,7 @@ const httpsServer           = https.createServer(credential, app);
 const httpServer            = http.createServer(app);
 
 /*      Pass CORS   */
-app.use(cors({
-    origin: "*"
-}));
+app.use(cors());
 
 /*      Accept JSON or RAW in request's body    */
 app.use(express.json());

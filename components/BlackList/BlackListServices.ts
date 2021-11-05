@@ -2,7 +2,6 @@ import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
 import {C201Resp, MissingField, SuccessResp, Con4Java} from "../Utils/API_RESPONSE";
 import {CreateOneBlackList, GetAllBlackList, CountBlackListDocuments, RemoveByID, EditBlackList} from "./BlackListDAO";
-import {create} from "domain";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
     let reqData: JSON = req.body;
