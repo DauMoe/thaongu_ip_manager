@@ -8,3 +8,5 @@ export const BLACKLIST_REMOVE_IP: string    = '/bl_remove_ip';
 export const BLACKLIST_SEARCH_IP: string    = '/bl_search_ip';
 export const BLACKLIST_EXPORT_IP: string    = '/bl_export_ip';
 export const BLACKLIST_ADD_EXCEL: string    = '/bl_new_excel';
+export const BLACKLIST_UPDATE_EXCEL: string = '/bl_update_excel';
+export const BLACKLIST_DELETE_EXCEL: string = '/bl_delete_excel';

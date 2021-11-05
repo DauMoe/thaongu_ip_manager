@@ -9,7 +9,7 @@ import {
     CountBlackListDocuments,
     RemoveByID,
     EditBlackList,
-    CreateManyBlackList, SearchBlackListIP
+    CreateManyBlackList, SearchBlackListIP, UpdateBlackListDocsByExcel, DeleteBlackListDocsByExcel
 } from "./BlackListDAO";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
@@ -159,6 +159,66 @@ export const NewBlackListExcel = async (req: Request, resp: Response): Promise<v
     } catch (e) {
         console.log("BlackListServices.ts - NewBlackListExcel: " + e);
         C201Resp(resp, ["\"Have an error in (BlackListServices.ts - NewBlackListExcel)\""]);
+    }
+}
+
+export const UpdateBlackListExcel = async (req: Request, resp: Response): Promise<void> => {
+    let path: string = req.files.blacklist_file[0].path;
+    try {
+        let workBooks = XLSX.readFile(path);
+        fs.unlinkSync(path); //Delete upload file after read
+        const SampleKeyHeaders = ['id', 'ip', 'desc', 'create_time'];
+        //@ts-ignore
+        let KeyHeaders: string[] = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {defval: '', header: 1})[1];
+        let CompareKeyHeader = JSON.parse(JSON.stringify(KeyHeaders));
+        for (let i of KeyHeaders) {
+            i = i.trim();
+            if (SampleKeyHeaders.indexOf(i) === -1) {
+                C201Resp(resp, ["Key headers must be 'id', 'ip', 'desc', 'create_time'"]);
+                return;
+            }
+            CompareKeyHeader.splice(CompareKeyHeader.indexOf(i), 1);
+        }
+        if (CompareKeyHeader.length > 0) {
+            C201Resp(resp, ["File missing key headers " + JSON.stringify(CompareKeyHeader)]);
+            return;
+        }
+        let ExcelData = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {range: 2, header: KeyHeaders});
+        await UpdateBlackListDocsByExcel(ExcelData);
+        SuccessResp(resp);
+    } catch (e) {
+        console.log("BlackListServices.ts - UpdateBlackListExcel: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - UpdateBlackListExcel)\""]);
+    }
+}
+
+export const DeleteBlackListExcel = async (req: Request, resp: Response): Promise<void> => {
+    let path: string = req.files.blacklist_file[0].path;
+    try {
+        let workBooks = XLSX.readFile(path);
+        fs.unlinkSync(path); //Delete upload file after read
+        const SampleKeyHeaders = ['id'];
+        //@ts-ignore
+        let KeyHeaders: string[] = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {defval: '', header: 1})[1];
+        let CompareKeyHeader = JSON.parse(JSON.stringify(KeyHeaders));
+        for (let i of KeyHeaders) {
+            i = i.trim();
+            if (SampleKeyHeaders.indexOf(i) === -1) {
+                C201Resp(resp, ["Key headers must be 'id'"]);
+                return;
+            }
+            CompareKeyHeader.splice(CompareKeyHeader.indexOf(i), 1);
+        }
+        if (CompareKeyHeader.length > 0) {
+            C201Resp(resp, ["File missing key headers " + JSON.stringify(CompareKeyHeader)]);
+            return;
+        }
+        let ExcelData = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {range: 2, header: KeyHeaders});
+        await DeleteBlackListDocsByExcel(ExcelData);
+        SuccessResp(resp);
+    } catch (e) {
+        console.log("BlackListServices.ts - UpdateBlackListExcel: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - UpdateBlackListExcel)\""]);
     }
 }
 

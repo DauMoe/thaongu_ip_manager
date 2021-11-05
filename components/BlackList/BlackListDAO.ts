@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { BlackListSchema } from '../Utils/Global_Schema';
 import { BlackList } from '../Utils/Global_Interface';
 import {ObjectId} from "mongodb";
+import {Request, Response} from "express";
 
 dotenv.config({
     path: __dirname + "/../../.env"
@@ -90,6 +91,26 @@ export const SearchBlackListIP:Function = async (id?: string, ip?: string, creat
         }
     }
     return BlackListModel.find(options);
+}
+
+export const UpdateBlackListDocsByExcel = async (data: any) => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
+    let ListPromise = [];
+    for (let i of data) {
+        ListPromise.push(BlackListModel.findByIdAndUpdate(i.id, i));
+    }
+    return Promise.all(ListPromise);
+}
+
+export const DeleteBlackListDocsByExcel = async (data: any[]) => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
+    let ListPromise = [];
+    for (let i of data) {
+        ListPromise.push(BlackListModel.findByIdAndDelete(i.id));
+    }
+    return Promise.all(ListPromise);
 }
 
 export const FindBlackList:Function = async (ip: string, create_time: string) => {
