@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
 import {C201Resp, MissingField, SuccessResp, Con4Java} from "../Utils/API_RESPONSE";
 import {CreateOneBlackList, GetAllBlackList, CountBlackListDocuments, RemoveByID, EditBlackList} from "./BlackListDAO";
+import multiparty from "multiparty-express";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
     let reqData: JSON = req.body;
@@ -121,6 +122,10 @@ export const EditDocs = async (req: Request, resp: Response): Promise<void> => {
         console.log(e);
         C201Resp(resp, ["\"Have an error in (BlackListservices.ts-EditDocs)\""]);
     }
+}
+
+export const NewBlackListExcel = async (req: Request, resp: Response): Promise<void> => {
+    console.log(req.files);
 }
 
 export const x = async (req: Request, resp: Response): Promise<void> => {
