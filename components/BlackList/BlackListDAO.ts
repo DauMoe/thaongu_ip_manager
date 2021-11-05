@@ -52,6 +52,16 @@ export const RemoveByID: Function = async (id: string) => {
     return BlackListModel.findByIdAndRemove(new ObjectId(id));
 }
 
+export const EditBlackList: Function = async (id: string, data: any) => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
+    return BlackListModel.updateOne({
+        _id: new ObjectId(id),
+    }, {
+        ...data
+    });
+}
+
 export const SearchBlackListIP:Function = async (id?: string, ip?: string, create_time_from?: number, create_time_to?: number): Promise<any> => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);

@@ -1,12 +1,16 @@
 import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
 import {C201Resp, MissingField, SuccessResp, Con4Java} from "../Utils/API_RESPONSE";
-import {CreateOneBlackList, GetAllBlackList, CountBlackListDocuments, RemoveByID} from "./BlackListDAO";
+import {CreateOneBlackList, GetAllBlackList, CountBlackListDocuments, RemoveByID, EditBlackList} from "./BlackListDAO";
+import {create} from "domain";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
     let reqData: JSON = req.body;
 
-    if (!reqData.hasOwnProperty("ip")) MissingField(resp, "ip");
+    if (!reqData.hasOwnProperty("ip")) {
+        MissingField(resp, "ip");
+        return;
+    }
 
     try {
         //@ts-ignore
@@ -28,10 +32,16 @@ export const GetBlackList = async (req: Request, resp: Response): Promise<void> 
     let reqData = req.body;
 
     try {
-        let offset: number = 0, limit: number = 0;
-        if (!reqData.hasOwnProperty("offset")) MissingField("offset");
-        if (!reqData.hasOwnProperty("limit")) MissingField("limit");
+        if (!reqData.hasOwnProperty("offset")) {
+            MissingField(resp, "offset");
+            return;
+        }
+        if (!reqData.hasOwnProperty("limit")) {
+            MissingField(resp, "limit");
+            return;
+        }
 
+        let offset: number = 0, limit: number = 0;
         offset = reqData["offset"] as number;
         limit = reqData["limit"] as number;
 
@@ -65,13 +75,52 @@ export const RemoveDocs = async (req: Request, resp: Response): Promise<void> =>
     let reqData = req.body;
 
     try {
-        if (!reqData.hasOwnProperty("id")) MissingField("id");
+        if (!reqData.hasOwnProperty("id")) {
+            MissingField(resp, "id");
+            return;
+        }
         let id: string = reqData["id"] as string;
         await RemoveByID(id);
         SuccessResp(resp);
     } catch(e) {
         console.log(e);
         C201Resp(resp, ["\"Have an error in (BlackListservices.ts-RemoveDocs)\""]);
+    }
+}
+
+export const EditDocs = async (req: Request, resp: Response): Promise<void> => {
+    let reqData = req.body;
+
+    try {
+        if (!reqData.hasOwnProperty("id")) {
+            MissingField(resp, "id");
+            return;
+        }
+        if (!reqData.hasOwnProperty("ip")) {
+            MissingField(resp, "ip");
+            return;
+        }
+
+        let id: string, ip: string, desc: string, create_time: string;
+
+        //@ts-ignore
+        id = reqData["id"];
+        //@ts-ignore
+        ip = reqData["ip"];
+        //@ts-ignore
+        desc = reqData["desc"];
+        //@ts-ignore
+        create_time = reqData["create_time"];
+
+        await EditBlackList(id, {
+            ip: ip,
+            desc: desc,
+            create_time: create_time
+        });
+        SuccessResp(resp);
+    } catch (e) {
+        console.log(e);
+        C201Resp(resp, ["\"Have an error in (BlackListservices.ts-EditDocs)\""]);
     }
 }
 

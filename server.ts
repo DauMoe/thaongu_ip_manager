@@ -1,7 +1,7 @@
 import {Application, NextFunction, Request, Response} from "express";
 import * as _URL from './API_URL';
-import {NewBlackList, GetBlackList, RemoveDocs} from "./components/BlackList/BlackListServices";
-// const BL_Services           = require("./components/BlackList/BlackListServices");
+import {NewBlackList, GetBlackList, RemoveDocs, EditDocs} from "./components/BlackList/BlackListServices";
+
 const https                 = require("https");
 const http                  = require("http");
 const fs                    = require("fs");
@@ -20,7 +20,9 @@ const httpsServer           = https.createServer(credential, app);
 const httpServer            = http.createServer(app);
 
 /*      Pass CORS   */
-app.use(cors());
+app.use(cors({
+    origin: "*"
+}));
 
 /*      Accept JSON or RAW in request's body    */
 app.use(express.json());
@@ -29,12 +31,13 @@ app.use(express.raw());
 /*      Middleware to check authentication and authorization    */
 function CheckAuthMiddleWare(req: Request, resp: Response, next: NextFunction) {
     next();
-};
+}
 
 /*      API AREA    */
 app.post(_URL.BLACKLIST_ADD_IP, CheckAuthMiddleWare, NewBlackList);
 app.post(_URL.BLACKLIST_GET_IP, CheckAuthMiddleWare, GetBlackList);
 app.post(_URL.BLACKLIST_REMOVE_IP, CheckAuthMiddleWare, RemoveDocs);
+app.post(_URL.BLACKLIST_EDIT_IP, CheckAuthMiddleWare, EditDocs);
 
 /*      Start server       */
 // httpsServer.listen(PORT, function(): void {
