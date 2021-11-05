@@ -1,7 +1,7 @@
 import { Schema, model, connect, Model, Query, Document } from 'mongoose';
 import dotenv from "dotenv";
 import { BlackListSchema } from '../Utils/Global_Schema';
-import { BlackList } from './../Utils/Global_Interface';
+import { BlackList } from '../Utils/Global_Interface';
 import {ObjectId} from "mongodb";
 
 dotenv.config({
@@ -9,7 +9,6 @@ dotenv.config({
 });
 
 let _EscapeReg: Function = (msg: string): string => {
-    if (typeof(msg) !== 'string') return '';
     return msg.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d');
 }
 
@@ -21,7 +20,7 @@ const _BL_MODEL         : string = process.env.BLACKLIST_MODEL as string    || '
 export const CreateOneBlackList: Function = async (ip: string, desc?: string, create_time?: number) => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
-    return await new BlackListModel({
+    return new BlackListModel({
         "ip": ip,
         "desc": desc,
         "create_time": create_time
@@ -60,6 +59,12 @@ export const EditBlackList: Function = async (id: string, data: any) => {
     }, {
         ...data
     });
+}
+
+export const CreateManyBlackList = async(data: any) => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
+    return BlackListModel.insertMany(data);
 }
 
 export const SearchBlackListIP:Function = async (id?: string, ip?: string, create_time_from?: number, create_time_to?: number): Promise<any> => {

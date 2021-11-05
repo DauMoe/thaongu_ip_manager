@@ -1,11 +1,19 @@
 import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
 import {C201Resp, MissingField, SuccessResp, Con4Java} from "../Utils/API_RESPONSE";
-import {CreateOneBlackList, GetAllBlackList, CountBlackListDocuments, RemoveByID, EditBlackList} from "./BlackListDAO";
-import multiparty from "multiparty-express";
+import {
+    CreateOneBlackList,
+    GetAllBlackList,
+    CountBlackListDocuments,
+    RemoveByID,
+    EditBlackList,
+    CreateManyBlackList
+} from "./BlackListDAO";
+import fs from "fs";
+import XLSX from "xlsx";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
-    let reqData: JSON = req.body;
+    let reqData = req.body;
 
     if (!reqData.hasOwnProperty("ip")) {
         MissingField(resp, "ip");
@@ -20,11 +28,11 @@ export const NewBlackList = async (req: Request, resp: Response): Promise<void> 
         //@ts-ignore
         let create_time: number = Number.parseInt(reqData["create_time"] as number) || undefined;
 
-        CreateOneBlackList(ip, desc, create_time);
+        await CreateOneBlackList(ip, desc, create_time);
         SuccessResp(resp);
     } catch(e) {
-        console.log(e);
-        C201Resp(resp, ["\"Have an error in (BlackListservices.ts-NewBlackList)\""]);
+        console.log("BlackListServices.ts - NewBlackList: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - NewBlackList)\""]);
     }
 }
 
@@ -66,8 +74,8 @@ export const GetBlackList = async (req: Request, resp: Response): Promise<void> 
         resultData["total"] = TotalDocs;
         SuccessResp(resp, resultData);
     } catch(e) {
-        console.log(e);
-        C201Resp(resp, ["\"Have an error in (BlackListservices.ts-GetBlackList)\""]);
+        console.log("BlackListServices.ts - GetBlackList: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - GetBlackList)\""]);
     }
 }
 
@@ -83,8 +91,8 @@ export const RemoveDocs = async (req: Request, resp: Response): Promise<void> =>
         await RemoveByID(id);
         SuccessResp(resp);
     } catch(e) {
-        console.log(e);
-        C201Resp(resp, ["\"Have an error in (BlackListservices.ts-RemoveDocs)\""]);
+        console.log("BlackListServices.ts - RemoveDocs: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - RemoveDocs)\""]);
     }
 }
 
@@ -119,13 +127,33 @@ export const EditDocs = async (req: Request, resp: Response): Promise<void> => {
         });
         SuccessResp(resp);
     } catch (e) {
-        console.log(e);
-        C201Resp(resp, ["\"Have an error in (BlackListservices.ts-EditDocs)\""]);
+        console.log("BlackListServices.ts - EditDocs: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - EditDocs)\""]);
     }
 }
 
-export const NewBlackListExcel = async (req: Request, resp: Response): Promise<void> => {
-    console.log(req.files);
+export const NewBlackListExcel = async (req: any, resp: any): Promise<void> => {
+    let path: string = req.files.blacklist_file[0].path;
+    try {
+        let workBooks = XLSX.readFile(path);
+        fs.unlinkSync(path); //Delete upload file after read
+        const SampleKeyHeaders = ['ip', 'desc', 'create_time'];
+        //@ts-ignore
+        let KeyHeaders: string[] = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {defval: '', header: 1})[1];
+        for (let i of KeyHeaders) {
+            i = i.trim();
+            if (SampleKeyHeaders.indexOf(i) === -1) {
+                C201Resp(resp, ["Key headers must be 'ip', 'desc', 'create_time'"]);
+                return;
+            }
+        }
+        let ExcelData = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {range: 2, header: KeyHeaders});
+        await CreateManyBlackList(ExcelData);
+        SuccessResp(resp);
+    } catch (e) {
+        console.log("BlackListServices.ts - NewBlackListExcel: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - NewBlackListExcel)\""]);
+    }
 }
 
 export const x = async (req: Request, resp: Response): Promise<void> => {

@@ -16,11 +16,12 @@ export const MissingField: Function = (resp: Response, field: string): void => {
     });
 }
 
-export const SuccessResp: Function = (resp: Response, data?: any, isBreak?: boolean): void => {
+export const SuccessResp: Function = (resp: Response, data?: any): void => {
     if (data === undefined) {
         RespCustomCode(resp, 200, ["Success"]);
+    } else {
+        RespCustomCode(resp, 200, data);
     }
-    RespCustomCode(resp, 200, data);
 }
 
 export const C201Resp: Function = (resp: Response, data: any): void => {
