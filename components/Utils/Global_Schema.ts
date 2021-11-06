@@ -4,11 +4,13 @@ import {BlackList, VLAN} from "./Global_Interface";
 export const BlackListSchema = new Schema<BlackList>({
     "ip": {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        index: true
     },
     "create_time": {
-        type: Number,
-        default: Date.now
+        type: Date,
+        default: new Date()
     },
     "desc": {
         type: String,

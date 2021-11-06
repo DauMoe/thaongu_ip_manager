@@ -1,9 +1,8 @@
-import { Schema, model, connect, Model, Query, Document } from 'mongoose';
+import {model, connect} from 'mongoose';
 import dotenv from "dotenv";
-import { BlackListSchema } from '../Utils/Global_Schema';
-import { BlackList } from '../Utils/Global_Interface';
+import {BlackListSchema} from '../Utils/Global_Schema';
+import {BlackList} from '../Utils/Global_Interface';
 import {ObjectId} from "mongodb";
-import {Request, Response} from "express";
 
 dotenv.config({
     path: __dirname + "/../../.env"
@@ -60,7 +59,7 @@ export const EditBlackList: Function = async (id: string, data: any) => {
     });
 }
 
-export const SearchBlackListIP:Function = async (id?: string, ip?: string, create_time_from?: number, create_time_to?: number): Promise<any> => {
+export const SearchBlackListIP:Function = async (id: string, ip: string, create_time_from: number, create_time_to: number, created_at_from: number, created_at_to: number, updated_at_from: number, updated_at_to: number): Promise<any> => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
     let options = {};
@@ -80,6 +79,22 @@ export const SearchBlackListIP:Function = async (id?: string, ip?: string, creat
         options["create_time"] = {
             $gt: create_time_from,
             $lt: create_time_to
+        }
+    }
+
+    if (created_at_from !== undefined && created_at_to !== undefined) {
+        //@ts-ignore
+        options["createdAt"] = {
+            $gt: created_at_from,
+            $lt: created_at_to
+        }
+    }
+
+    if (updated_at_from !== undefined && updated_at_to !== undefined) {
+        //@ts-ignore
+        options["updatedAt"] = {
+            $gt: updated_at_from,
+            $lt: updated_at_to
         }
     }
     return BlackListModel.find(options);

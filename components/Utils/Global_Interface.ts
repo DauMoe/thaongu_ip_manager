@@ -1,7 +1,7 @@
 export interface BlackList {
     ip: string;
     desc: string;
-    create_time: number;
+    create_time: Date;
 }
 
 export interface VLAN {

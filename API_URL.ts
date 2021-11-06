@@ -10,3 +10,6 @@ export const BLACKLIST_EXPORT_EXCEL: string = '/bl_export_excel';
 export const BLACKLIST_ADD_EXCEL: string    = '/bl_new_excel';
 export const BLACKLIST_UPDATE_EXCEL: string = '/bl_update_excel';
 export const BLACKLIST_DELETE_EXCEL: string = '/bl_delete_excel';
+
+
+export const BLACKLIST_IMPORTED_IP_TODAY_EXCEL: string = '/bl_list_imported_ip_excel';

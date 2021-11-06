@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import { ObjectId } from "mongodb";
 import fs from "fs";
 import XLSX from "xlsx";
-import {C201Resp, MissingField, SuccessResp, Con4Java} from "../Utils/API_RESPONSE";
+import {C201Resp, MissingField, SuccessResp, Con4Java, RespCustomCode} from "../Utils/API_RESPONSE";
 import {
     CreateOneBlackList,
     GetAllBlackList,
@@ -14,8 +14,9 @@ import {
     UpdateBlackListDocsByExcel,
     DeleteBlackListDocsByExcel
 } from "./BlackListDAO";
+import {ConvertTimeStamp2String, YYYY_MM_DD_Reg} from "../Utils/Common";
 
-const _TIMEOUT2DELETE = 1000 * 60; //1min
+const _TIMEOUT2DELETE = 1000 * 60 * 10; //10 minutes
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
     let reqData = req.body;
@@ -36,6 +37,11 @@ export const NewBlackList = async (req: Request, resp: Response): Promise<void> 
         await CreateOneBlackList(ip, desc, create_time);
         SuccessResp(resp);
     } catch(e) {
+        //@ts-ignore
+        if (e.code === 11000) {
+            C201Resp(resp, ["This ip has been declare"]);
+            return;
+        }
         console.log("BlackListServices.ts - NewBlackList: " + e);
         C201Resp(resp, ["\"Have an error in (BlackListServices.ts - NewBlackList)\""]);
     }
@@ -173,7 +179,7 @@ export const SearchByBlacklistIP = async (req: Request, resp: Response): Promise
 }
 
 export const NewBlackListExcel = async (req: Request, resp: Response): Promise<void> => {
-    let path: string = req.files.blacklist_file[0].path;
+    let path: string    = req.files.blacklist_file[0].path;
     try {
         let workBooks = XLSX.readFile(path);
         fs.unlinkSync(path); //Delete upload file after read
@@ -194,7 +200,30 @@ export const NewBlackListExcel = async (req: Request, resp: Response): Promise<v
             return;
         }
         let ExcelData = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {range: 2, header: KeyHeaders});
-        await CreateBlackListDocsByExcel(ExcelData);
+        try {
+            await CreateBlackListDocsByExcel(ExcelData);
+        } catch (e) {
+            let DuplicateIP = [['ID', 'IP', 'Validity', 'Create time', 'Created at', 'Updated at'], ['id', 'ip', 'desc', 'create_time', 'created_at', 'updated_at']];
+            //@ts-ignore
+            for (let i of e.writeErrors) {
+                if (i.code === 11000) {
+                    i.err.op.id = new ObjectId(i.err.op._id).toString();
+                    DuplicateIP.push([i.err.op._id.toString(), i.err.op.ip, i.err.op.desc, i.err.op.create_time, i.err.op.createdAt, i.err.op.updatedAt]);
+                }
+            }
+            const fileName = new Date().getTime() + "_DuplicateIPs.xlsx";
+            let serverPathFile = "./public/report/" + fileName;
+            let clientPathFile = "asset/report/" + fileName;
+            let workBooks = XLSX.utils.book_new();
+            let workSheet = XLSX.utils.aoa_to_sheet(DuplicateIP);
+            XLSX.utils.book_append_sheet(workBooks, workSheet, "Duplicate IPs");
+            await XLSX.writeFile(workBooks, serverPathFile);
+            RespCustomCode(resp, 202, [{url: clientPathFile}]);
+            setTimeout(() => {
+                fs.unlinkSync(serverPathFile);
+            }, _TIMEOUT2DELETE);
+            return;
+        }
         SuccessResp(resp);
     } catch (e) {
         console.log("BlackListServices.ts - NewBlackListExcel: " + e);
@@ -244,7 +273,7 @@ export const DeleteBlackListExcel = async (req: Request, resp: Response): Promis
         for (let i of KeyHeaders) {
             i = i.trim();
             if (SampleKeyHeaders.indexOf(i) === -1) {
-                C201Resp(resp, ["Key headers must be 'id'"]);
+                C201Resp(resp, ["Key headers must have 'id'"]);
                 return;
             }
             CompareKeyHeader.splice(CompareKeyHeader.indexOf(i), 1);
@@ -268,7 +297,7 @@ export const ExportAllBlackListData2Excel = async(req: Request, resp: Response):
         const fileName = new Date().getTime() + "_TotalData.xlsx";
         let serverPathFile = "./public/report/" + fileName;
         let clientPathFile = "asset/report/" + fileName;
-        let dataForExcel = [['ID', 'IP', 'Description', 'Create time', 'Created at', 'Updated at']];
+        let dataForExcel = [['ID', 'IP', 'Description', 'Create time', 'Created at', 'Updated at'], ['id', 'ip', 'desc', 'create_time', 'created_at', 'updated_at']];
         for (let i of result) {
             i.id = new ObjectId(i._id);
             dataForExcel.push(
@@ -286,5 +315,55 @@ export const ExportAllBlackListData2Excel = async(req: Request, resp: Response):
     } catch (e) {
         console.log("BlackListServices.ts - ExportAllBlackListData2Excel: " + e);
         C201Resp(resp, ["\"Have an error in (BlackListServices.ts - ExportAllBlackListData2Excel)\""]);
+    }
+}
+
+export const ExportNewBlackListToday = async(req: Request, resp: Response): Promise<void> => {
+    let reqData = req.body;
+    let _from: number, _to: number;
+
+    if (!reqData.hasOwnProperty("createdAt_from")) {
+        MissingField(resp, "createdAt_from");
+        return;
+    }
+    if (!reqData.hasOwnProperty("createdAt_to")) {
+        MissingField(resp, "createdAt_to");
+        return;
+    }
+
+    _from   = reqData.createdAt_from as number;
+    _to     = reqData.createdAt_to as number;
+
+    try {
+        let result = await SearchBlackListIP(
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            _from, _to,
+            undefined,
+            undefined
+        );
+        let ExcelData = [["ID", "IP", "Validity", "Create time", "Created at", "Updated at"], ["id", "ip", "desc", "create_time", "created_at", "updated_at"]];
+        for (let i of result) {
+            ExcelData.push(
+                [i._id.toString(), i.ip, i.desc, i.create_time, i.createdAt, i.updatedAt]
+            );
+        }
+        const fileName = new Date().getTime() + "_ListIP_ImportToday.xlsx";
+        let serverPathFile = "./public/report/" + fileName;
+        let clientPathFile = "asset/report/" + fileName;
+        let workBooks = XLSX.utils.book_new();
+        let workSheet = XLSX.utils.aoa_to_sheet(ExcelData);
+        XLSX.utils.book_append_sheet(workBooks, workSheet, "List IPs");
+        await XLSX.writeFile(workBooks, serverPathFile);
+        SuccessResp(resp, [{url: clientPathFile}]);
+        setTimeout(() => {
+            fs.unlinkSync(serverPathFile);
+        }, _TIMEOUT2DELETE);
+
+    } catch (e) {
+        console.log("BlackListServices.ts - ExportNewBlackListToday: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - ExportNewBlackListToday)\""]);
     }
 }

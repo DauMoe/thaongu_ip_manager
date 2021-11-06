@@ -5,10 +5,10 @@
 /ip_fe/.pnp.js
 
 # testing
-/ip_fe//coverage
+/ip_fe/coverage
 
 # production
-/ip_fe//build
+/ip_fe/build
 
 # misc
 /ip_fe/.DS_Store
