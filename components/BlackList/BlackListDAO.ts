@@ -17,7 +17,6 @@ const MONGO_DB_BASEURL  : string = process.env.MONGO_URL as string          || "
 const MONGO_DB_NAME     : string = process.env.MONGO_DB_NAME as string      || "thao_ip_manager";
 const _BL_MODEL         : string = process.env.BLACKLIST_MODEL as string    || 'blacklist';
 
-/*===== INSERT ====*/
 export const CreateOneBlackList: Function = async (ip: string, desc?: string, create_time?: number) => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
@@ -28,7 +27,6 @@ export const CreateOneBlackList: Function = async (ip: string, desc?: string, cr
     }).save();
 }
 
-/*===== SELECT ====*/
 export const GetAllBlackList:Function = async (offset: number, limit: number) => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
@@ -62,12 +60,6 @@ export const EditBlackList: Function = async (id: string, data: any) => {
     });
 }
 
-export const CreateManyBlackList = async(data: any) => {
-    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
-    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
-    return BlackListModel.insertMany(data);
-}
-
 export const SearchBlackListIP:Function = async (id?: string, ip?: string, create_time_from?: number, create_time_to?: number): Promise<any> => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
@@ -93,6 +85,12 @@ export const SearchBlackListIP:Function = async (id?: string, ip?: string, creat
     return BlackListModel.find(options);
 }
 
+export const CreateBlackListDocsByExcel = async(data: any) => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
+    return BlackListModel.insertMany(data);
+}
+
 export const UpdateBlackListDocsByExcel = async (data: any) => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const BlackListModel = model<BlackList>(_BL_MODEL, BlackListSchema);
@@ -111,8 +109,4 @@ export const DeleteBlackListDocsByExcel = async (data: any[]) => {
         ListPromise.push(BlackListModel.findByIdAndDelete(i.id));
     }
     return Promise.all(ListPromise);
-}
-
-export const FindBlackList:Function = async (ip: string, create_time: string) => {
-    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
 }

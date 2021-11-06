@@ -8,7 +8,7 @@ import {
     EditDocs,
     NewBlackListExcel,
     SearchByBlacklistIP,
-    UpdateBlackListExcel, DeleteBlackListExcel
+    UpdateBlackListExcel, DeleteBlackListExcel, ExportAllBlackListData2Excel
 } from "./components/BlackList/BlackListServices";
 
 const https                 = require("https");
@@ -54,6 +54,7 @@ app.post(_URL.BLACKLIST_SEARCH_IP, CheckAuthMiddleWare, SearchByBlacklistIP);
 app.post(_URL.BLACKLIST_ADD_EXCEL, multiparty(), CheckAuthMiddleWare, NewBlackListExcel);
 app.post(_URL.BLACKLIST_UPDATE_EXCEL, multiparty(), CheckAuthMiddleWare, UpdateBlackListExcel);
 app.post(_URL.BLACKLIST_DELETE_EXCEL, multiparty(), CheckAuthMiddleWare, DeleteBlackListExcel);
+app.post(_URL.BLACKLIST_EXPORT_EXCEL, CheckAuthMiddleWare, ExportAllBlackListData2Excel);
 
 /*      Start server       */
 // httpsServer.listen(PORT, function(): void {

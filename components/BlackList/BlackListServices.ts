@@ -9,8 +9,13 @@ import {
     CountBlackListDocuments,
     RemoveByID,
     EditBlackList,
-    CreateManyBlackList, SearchBlackListIP, UpdateBlackListDocsByExcel, DeleteBlackListDocsByExcel
+    CreateBlackListDocsByExcel,
+    SearchBlackListIP,
+    UpdateBlackListDocsByExcel,
+    DeleteBlackListDocsByExcel
 } from "./BlackListDAO";
+
+const _TIMEOUT2DELETE = 1000 * 60; //1min
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
     let reqData = req.body;
@@ -132,6 +137,41 @@ export const EditDocs = async (req: Request, resp: Response): Promise<void> => {
     }
 }
 
+export const SearchByBlacklistIP = async (req: Request, resp: Response): Promise<void> => {
+    let reqData = req.body;
+
+    try {
+        if (!reqData.hasOwnProperty("ip")) {
+            MissingField(resp, "ip");
+            return;
+        }
+
+        let ip                      = reqData["ip"] as string;
+        let BlackListIPs            = await SearchBlackListIP(undefined, ip);
+        let BlackListIPArr: any[]   = [];
+        let resultData              = {};
+
+        for (let BlackListIP of BlackListIPs) {
+            BlackListIPArr.push({
+                "id": Con4Java(new ObjectId(BlackListIP._id)),
+                "ip": Con4Java(BlackListIP.ip),
+                "desc": Con4Java(BlackListIP.desc),
+                "create_time": BlackListIP.create_time,
+                "createdAt": Con4Java(BlackListIP.createdAt),
+                "updatedAt": Con4Java(BlackListIP.updatedAt),
+            });
+        }
+        //@ts-ignore
+        resultData["list"] = BlackListIPArr;
+        //@ts-ignore
+        resultData["total"] = BlackListIPArr.length;
+        SuccessResp(resp, resultData);
+    } catch (e) {
+        console.log("BlackListServices.ts - SearchByBlacklistIP: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - SearchByBlacklistIP)\""]);
+    }
+}
+
 export const NewBlackListExcel = async (req: Request, resp: Response): Promise<void> => {
     let path: string = req.files.blacklist_file[0].path;
     try {
@@ -154,7 +194,7 @@ export const NewBlackListExcel = async (req: Request, resp: Response): Promise<v
             return;
         }
         let ExcelData = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {range: 2, header: KeyHeaders});
-        await CreateManyBlackList(ExcelData);
+        await CreateBlackListDocsByExcel(ExcelData);
         SuccessResp(resp);
     } catch (e) {
         console.log("BlackListServices.ts - NewBlackListExcel: " + e);
@@ -222,37 +262,29 @@ export const DeleteBlackListExcel = async (req: Request, resp: Response): Promis
     }
 }
 
-export const SearchByBlacklistIP = async (req: Request, resp: Response): Promise<void> => {
-    let reqData = req.body;
-
+export const ExportAllBlackListData2Excel = async(req: Request, resp: Response): Promise<void> => {
     try {
-        if (!reqData.hasOwnProperty("ip")) {
-            MissingField(resp, "ip");
-            return;
+        let result = await GetAllBlackList(0);
+        const fileName = new Date().getTime() + "_TotalData.xlsx";
+        let serverPathFile = "./public/report/" + fileName;
+        let clientPathFile = "asset/report/" + fileName;
+        let dataForExcel = [['ID', 'IP', 'Description', 'Create time', 'Created at', 'Updated at']];
+        for (let i of result) {
+            i.id = new ObjectId(i._id);
+            dataForExcel.push(
+                [i.id, i.ip, i.desc, i.create_time, i.createdAt, i.updatedAt]
+            );
         }
-
-        let ip                      = reqData["ip"] as string;
-        let BlackListIPs            = await SearchBlackListIP(undefined, ip);
-        let BlackListIPArr: any[]   = [];
-        let resultData              = {};
-
-        for (let BlackListIP of BlackListIPs) {
-            BlackListIPArr.push({
-                "id": Con4Java(new ObjectId(BlackListIP._id)),
-                "ip": Con4Java(BlackListIP.ip),
-                "desc": Con4Java(BlackListIP.desc),
-                "create_time": BlackListIP.create_time,
-                "createdAt": Con4Java(BlackListIP.createdAt),
-                "updatedAt": Con4Java(BlackListIP.updatedAt),
-            });
-        }
-        //@ts-ignore
-        resultData["list"] = BlackListIPArr;
-        //@ts-ignore
-        resultData["total"] = BlackListIPArr.length;
-        SuccessResp(resp, resultData);
+        let workBooks = XLSX.utils.book_new();
+        let workSheet = XLSX.utils.aoa_to_sheet(dataForExcel);
+        XLSX.utils.book_append_sheet(workBooks, workSheet, "total data");
+        await XLSX.writeFile(workBooks, serverPathFile);
+        SuccessResp(resp, [{url: clientPathFile}]);
+        setTimeout(() => {
+            fs.unlinkSync(serverPathFile);
+        }, _TIMEOUT2DELETE);
     } catch (e) {
-        console.log("BlackListServices.ts - SearchByBlacklistIP: " + e);
-        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - SearchByBlacklistIP)\""]);
+        console.log("BlackListServices.ts - ExportAllBlackListData2Excel: " + e);
+        C201Resp(resp, ["\"Have an error in (BlackListServices.ts - ExportAllBlackListData2Excel)\""]);
     }
 }
