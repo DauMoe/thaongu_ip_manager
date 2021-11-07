@@ -13,6 +13,10 @@
   3. open `CMD` and **cd** to project  
   4. run `npm install` to install requirement package  
   5. config in `.env` file: Database name, Collection name, ....  
-  5. run `node server.js` to start server
+  5. run `node server.js` to start server  
+    
+#### NOTE:  
+> You should install `pm2` package to start server instead of using `node` command  
+> If you using `pm2` package, please use `pm2 start ecosystem.config.js` to start server
     
   

@@ -12,9 +12,21 @@ let _EscapeReg: Function = (msg: string): string => {
     return msg.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d');
 }
 
-const MONGO_DB_BASEURL  : string = process.env.MONGO_URL as string          || "mongodb://localhost:27017/";
+const MONGO_DB_USER     : string = process.env.MONGO_USER as string         || "";
+const MONGO_DB_PASS     : string = process.env.MONGO_PASS as string         || "";
+const MONGO_DB_URL      : string = process.env.MONGO_URL as string          || "localhost:27017/";
 const MONGO_DB_NAME     : string = process.env.MONGO_DB_NAME as string      || "thao_ip_manager";
 const _BL_MODEL         : string = process.env.BLACKLIST_MODEL as string    || 'blacklist';
+
+let MONGO_DB_BASEURL  : string;
+
+if (MONGO_DB_USER === "" && MONGO_DB_PASS === "") {
+    MONGO_DB_BASEURL = `mongodb://${MONGO_DB_URL}`;
+} else {
+    MONGO_DB_BASEURL = `mongodb://${MONGO_DB_USER}:${MONGO_DB_PASS}@${MONGO_DB_URL}`;
+}
+
+console.log(MONGO_DB_BASEURL);
 
 export const CreateOneBlackList: Function = async (ip: string, desc?: string, create_time?: number) => {
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
