@@ -10,6 +10,8 @@ import {
     SearchByBlacklistIP,
     UpdateBlackListExcel, DeleteBlackListExcel, ExportAllBlackListData2Excel, ExportNewBlackListToday
 } from "./components/BlackList/BlackListServices";
+import {getNumber, getString} from "./components/Utils/Common";
+import {C201Resp, SuccessResp} from "./components/Utils/API_RESPONSE";
 
 const https                 = require("https");
 const http                  = require("http");
@@ -48,6 +50,18 @@ function CheckAuthMiddleWare(req: Request, resp: Response, next: NextFunction) {
 
 app.get("/*", function (req: Request, resp: Response) {
     resp.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+
+app.post("/test", function (req: Request, resp: Response) {
+   let reqData = req.body;
+   try {
+       let str: number = getNumber(reqData, "user");
+       SuccessResp(resp, str);
+   } catch (e) {
+       //@ts-ignore
+       C201Resp(resp, e.message);
+   }
 });
 
 /*      BLACKLIST API    */
