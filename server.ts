@@ -10,7 +10,7 @@ import {
     SearchByBlacklistIP,
     UpdateBlackListExcel, DeleteBlackListExcel, ExportAllBlackListData2Excel, ExportNewBlackListToday
 } from "./components/BlackList/BlackListServices";
-import {getNumber, getString} from "./components/Utils/Common";
+import {getJSONArray, getNumber, getString, getSubArray} from "./components/Utils/Common";
 import {C201Resp, SuccessResp} from "./components/Utils/API_RESPONSE";
 
 const https                 = require("https");
