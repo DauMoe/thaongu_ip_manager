@@ -4,7 +4,7 @@ const _MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 export const YYYY_MM_DD_Reg = new RegExp('^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$');
 
 /*  Get and check function  */
-const CheckInputType = (data: any, field: string) => {
+const CheckInputType = (data: any, field: string): void => {
     if (typeof(data) !== "object") throw TypeError("First arg must be a JSON Object");
     if (!data.hasOwnProperty(field)) throw Error(`'${field}' is required!`);
 }
