@@ -4,9 +4,11 @@ const _MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 export const YYYY_MM_DD_Reg = new RegExp('^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$');
 
 /*  Get and check function  */
-const CheckInputType = (data: any, field: string): void => {
+const CheckInputType = (data: any, field: string, isRequired: boolean = true): void => {
     if (typeof(data) !== "object") throw TypeError("First arg must be a JSON Object");
-    if (!data.hasOwnProperty(field)) throw Error(`'${field}' is required!`);
+    if (isRequired) {
+        if (!data.hasOwnProperty(field)) throw Error(`'${field}' is required!`);
+    }
 }
 
 const isArray: Function = (data: any): boolean => {
@@ -25,22 +27,22 @@ const isJSONObject: Function = (data: any): boolean => {
     }
 }
 
-export const getString = (data: any, field: string): string => {
-    CheckInputType(data, field);
+export const getString = (data: any, field: string, isRequired: boolean = true): string => {
+    CheckInputType(data, field, isRequired);
     let msg = data[`${field}`];
     if (typeof (msg) === "object") throw TypeError(`'${field}' must be a string but get an object`);
     return msg;
 }
 
-export const getNumber = (data: any, field: string): number => {
-    CheckInputType(data, field);
+export const getNumber = (data: any, field: string, isRequired: boolean = true): number => {
+    CheckInputType(data, field, isRequired);
     let msg: number = Number.parseInt(data[`${field}`]);
     if (isNaN(msg)) throw TypeError(`'${field}' must be a number`);
     return msg;
 }
 
-export const getStringArray = (data: any, field: string): any[] => {
-    CheckInputType(data, field);
+export const getStringArray = (data: any, field: string, isRequired: boolean = true): any[] => {
+    CheckInputType(data, field, isRequired);
     let msg: any[] = data[`${field}`];
     if (!isArray(msg)) throw TypeError(`'${field}' must be an array`);
     msg.forEach((item, index) => {
@@ -49,8 +51,8 @@ export const getStringArray = (data: any, field: string): any[] => {
     return msg;
 }
 
-export const getSubArray = (data: any, field: string): any => {
-    CheckInputType(data, field);
+export const getSubArray = (data: any, field: string, isRequired: boolean = true): any => {
+    CheckInputType(data, field, isRequired);
     let msg: any[] = data[`${field}`];
     if (!isArray(msg)) throw TypeError(`'${field}' must be an array`);
     msg.forEach((item, index) => {
@@ -60,8 +62,8 @@ export const getSubArray = (data: any, field: string): any => {
     return msg;
 }
 
-export const getJSONArray = (data: any, field: string): any => {
-    CheckInputType(data, field);
+export const getJSONArray = (data: any, field: string, isRequired: boolean = true): any => {
+    CheckInputType(data, field, isRequired);
     let msg: any[] = data[`${field}`];
     if (!isArray(msg)) throw TypeError(`'${field}' must be an array`);
     msg.forEach((item, index) => {
