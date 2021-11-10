@@ -20,4 +20,21 @@
 
 
 ... Nếu như có chức năng đăng nhập, quyền (view, chỉnh sửa nữa thì càng tốt)
+
+2. Chức năng dành cho VLAN IPs:
+Thêm, sửa, xóa, tìm kiếm, xuất file excel
+Thêm:
++ số trường có thể thay đổi
++ IP không đc trùng. Nếu trùng thì hiện thông báo
+
+Sửa:
++ cập nhật lại ngày chỉnh sửa
+
+Tìm kiếm:
++ tìm kiếm trong tất cả các trường mà nó xuất hiện
++ các cột có thể nhóm theo 1 yêu cầu nào đó
+
+Xóa:
++ xóa 1 IP
++ xóa nhiều IP cùng 1 lúc
 	

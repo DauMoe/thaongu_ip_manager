@@ -1,5 +1,5 @@
 import express from "express";
-import * as _URL from "../../API_URL";
+import * as _URL from "../API_URL";
 import {
     DeleteBlackListExcel,
     EditDocs,

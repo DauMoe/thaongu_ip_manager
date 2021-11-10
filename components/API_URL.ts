@@ -15,4 +15,4 @@ export const BLACKLIST_DELETE_EXCEL: string = '/bl_delete_excel';
 export const BLACKLIST_IMPORTED_IP_TODAY_EXCEL: string = '/bl_list_imported_ip_excel';
 
 /*      VLAN API URL    */
-export const ADD_ELEMENT: string = "/add_element";
+export const ADD_PROPERTIES: string = "/add_properties";

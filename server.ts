@@ -1,6 +1,7 @@
 import {Application, Request, Response} from "express";
 import BL_Router from "./components/BlackList/BlackListRouter";
 import VLAN_Router from "./components/VLAN/VLAN_Router";
+import LogConfig from "./components/LogConfig";
 
 const https                 = require("https");
 const http                  = require("http");
@@ -29,7 +30,7 @@ app.use(cors());
 
 /*      Accept JSON or RAW in request's body    */
 app.use(express.json());
-app.use(express.raw());
+// app.use(express.raw());
 app.use(express.urlencoded());
 
 app.get("/*", function (req: Request, resp: Response) {
@@ -41,7 +42,7 @@ app.use("/blacklist", BL_Router);
 app.use("/vlan", VLAN_Router);
 
 httpServer.listen(PORT, function(): void {
-    console.log('[SUCCESS] API Server is available at URI: "http://<your device\'s IP>:' + PORT + '"');
+    LogConfig.info('Server is running at: "http://<your device\'s IP>:' + PORT + '"');
 });
 
 

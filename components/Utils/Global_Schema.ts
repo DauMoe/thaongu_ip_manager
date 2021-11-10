@@ -2,33 +2,29 @@ import {Schema} from "mongoose";
 import {BlackList, VLAN} from "./Global_Interface";
 
 export const BlackListSchema = new Schema<BlackList>({
-    "ip": {
+    ip: {
         type: String,
         required: true,
         unique: true,
         index: true
     },
-    "create_time": {
+    create_time: {
         type: Date,
         default: new Date()
     },
-    "desc": {
+    desc: {
         type: String,
         default: ""
     }
 }, {timestamps: true});
 
+/*  Dynamic fields: https://stackoverflow.com/questions/24517358/how-to-add-dynamic-field-to-existing-collection-using-mongoose */
 export const VLANSchema = new Schema<VLAN>({
-    "ip": {
+    ip: {
         type: String,
-        required: true
+        required: true,
+        index: true,
+        unique: true
     },
-    "create_time": {
-        type: Number,
-        default: Date.now
-    },
-    "desc": {
-        type: String,
-        default: ""
-    }
+    properties: {}
 }, {timestamps: true});

@@ -14,9 +14,7 @@ import {
     UpdateBlackListDocsByExcel,
     DeleteBlackListDocsByExcel
 } from "./BlackListDAO";
-import {ConvertTimeStamp2String, YYYY_MM_DD_Reg} from "../Utils/Common";
-
-const _TIMEOUT2DELETE = 1000 * 60 * 10; //10 minutes
+import { _TIMEOUT2DELETE } from "../Definition";
 
 export const NewBlackList = async (req: Request, resp: Response): Promise<void> => {
     let reqData = req.body;

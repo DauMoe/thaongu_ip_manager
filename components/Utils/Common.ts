@@ -64,16 +64,29 @@ export const getSubArray = (data: any, field: string, isRequired: boolean = true
     return msg;
 }
 
-export const getJSONArray = (data: any, field: string, isRequired: boolean = true): any => {
+export const getJSONArray = (data: any, field: string, isRequired: boolean = true): any[] => {
     CheckInputType(data, field, isRequired);
     let msg: any[] = data[`${field}`];
+    if (msg === undefined && !isRequired) return [];
     if (!isArray(msg)) throw TypeError(`'${field}' must be an array`);
     msg.forEach((item, index) => {
         if (!isJSONObject(item)) throw TypeError(`Item at index ${index} not a JSON`);
     });
     return msg;
 }
+
+export const getJSONObject = (data: any, field: string, isRequired: boolean = true): any => {
+    CheckInputType(data, field, isRequired);
+    let msg: any = data[`${field}`];
+    if (msg === undefined && !isRequired) return {};
+    if (!isJSONObject(msg)) throw TypeError(`'${field}' must be an JSONObject`);
+    return msg;
+}
 /*===================================================================================================================================*/
+export const _EscapeReg: Function = (msg: string): string => {
+    return msg.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d');
+}
+
 export const ConvertTimeStamp2String = (timestamp: number | string | Date, getDate = true, getTime = true) => {
     let msg = "";
     if (!timestamp) return "";
