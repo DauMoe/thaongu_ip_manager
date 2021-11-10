@@ -1,17 +1,6 @@
-import {Application, NextFunction, Request, Response} from "express";
-import multiparty from "multiparty-express";
-import * as _URL from './API_URL';
-import {
-    NewBlackList,
-    GetBlackList,
-    RemoveDocs,
-    EditDocs,
-    NewBlackListExcel,
-    SearchByBlacklistIP,
-    UpdateBlackListExcel, DeleteBlackListExcel, ExportAllBlackListData2Excel, ExportNewBlackListToday
-} from "./components/BlackList/BlackListServices";
-import {getJSONArray, getNumber, getString, getSubArray} from "./components/Utils/Common";
-import {C201Resp, SuccessResp} from "./components/Utils/API_RESPONSE";
+import {Application, Request, Response} from "express";
+import BL_Router from "./components/BlackList/BlackListRouter";
+import VLAN_Router from "./components/VLAN/VLAN_Router";
 
 const https                 = require("https");
 const http                  = require("http");
@@ -43,51 +32,17 @@ app.use(express.json());
 app.use(express.raw());
 app.use(express.urlencoded());
 
-/*      Middleware to check authentication and authorization    */
-function CheckAuthMiddleWare(req: Request, resp: Response, next: NextFunction) {
-    next();
-}
-
 app.get("/*", function (req: Request, resp: Response) {
     resp.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-
-app.post("/test", function (req: Request, resp: Response) {
-   let reqData = req.body;
-   try {
-       let str: number = getNumber(reqData, "user");
-       SuccessResp(resp, str);
-   } catch (e) {
-       //@ts-ignore
-       C201Resp(resp, e.message);
-   }
-});
-
-/*      BLACKLIST API    */
-app.post(_URL.BLACKLIST_ADD_IP, CheckAuthMiddleWare, NewBlackList);
-app.post(_URL.BLACKLIST_GET_IP, CheckAuthMiddleWare, GetBlackList);
-app.post(_URL.BLACKLIST_REMOVE_IP, CheckAuthMiddleWare, RemoveDocs);
-app.post(_URL.BLACKLIST_EDIT_IP, CheckAuthMiddleWare, EditDocs);
-app.post(_URL.BLACKLIST_SEARCH_IP, CheckAuthMiddleWare, SearchByBlacklistIP);
-app.post(_URL.BLACKLIST_EXPORT_EXCEL, CheckAuthMiddleWare, ExportAllBlackListData2Excel);
-app.post(_URL.BLACKLIST_IMPORTED_IP_TODAY_EXCEL, CheckAuthMiddleWare, ExportNewBlackListToday);
-app.post(_URL.BLACKLIST_ADD_EXCEL, multiparty(), CheckAuthMiddleWare, NewBlackListExcel);
-app.post(_URL.BLACKLIST_UPDATE_EXCEL, multiparty(), CheckAuthMiddleWare, UpdateBlackListExcel);
-app.post(_URL.BLACKLIST_DELETE_EXCEL, multiparty(), CheckAuthMiddleWare, DeleteBlackListExcel);
-
-
-// app.post("/test", ExportNewBlackListToday);
-
-
-/*      Start server       */
-// httpsServer.listen(PORT, function(): void {
-//    console.log('[SUCCESS] API Server is available at URI: \'https://<your device\'s IP>:' + PORT + '\'');
-// });
+/* API */
+app.use("/blacklist", BL_Router);
+app.use("/vlan", VLAN_Router);
 
 httpServer.listen(PORT, function(): void {
-    console.log('[SUCCESS] API Server is available at URI: \'https://<your device\'s IP>:' + PORT + '\'');
- });
+    console.log('[SUCCESS] API Server is available at URI: "http://<your device\'s IP>:' + PORT + '"');
+});
 
 
 type ModuleId = string | number;
