@@ -22,7 +22,7 @@ export const GetAllBlackList:Function = async (offset: number, limit: number) =>
         .find({})
         .limit(limit)
         .skip(offset)
-        .sort({'createAt': -1})
+        .sort({'createdAt': -1})
         .exec();
 }
 

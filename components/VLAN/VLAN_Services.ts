@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import LogConfig from "../LogConfig";
-import {getJSONObject, getString} from "../Utils/Common";
-import {GetPropertiesByID, NewVLAN_IP, Single_AddProperties} from "./VLAN_DAO";
+import {getJSONObject, getNumber, getString} from "../Utils/Common";
+import {CountTotalDocs, GetDocsLimit, GetPropertiesByID, NewVLAN_IP, Single_AddProperties} from "./VLAN_DAO";
 import {C201Resp, SuccessResp} from "../Utils/API_RESPONSE";
 import {RequiredVLANProperties} from "../Definition";
 
@@ -72,6 +72,35 @@ export const GetProByID = async (req:Request, resp: Response): Promise<any> => {
         SuccessResp(resp, [_doc]);
     } catch (e) {
         console.log("(VLAN_Services.ts - GetProByID) Err:");
+
+        //@ts-ignore
+        C201Resp(resp, [e.message]);
+
+        //@ts-ignore
+        LogConfig.error(e.message);
+    }
+}
+
+export const GetListVLANIPs = async (req: Request, resp: Response): Promise<any> => {
+    let reqData = req.body;
+
+    try {
+        let offset = getNumber(reqData, "offset");
+        let limit = getNumber(reqData, "limit");
+        let result = await GetDocsLimit(offset, limit);
+        let totalPage = await CountTotalDocs();
+        for (let i of result) {
+            i = i._doc;
+            i.id = i._id;
+            delete i._id;
+            delete i.__v;
+        }
+        SuccessResp(resp, {
+            "list": result,
+            "total": totalPage
+        });
+    } catch (e) {
+        console.log("(VLAN_Services.ts - GetListVLANIPs) Err:");
 
         //@ts-ignore
         C201Resp(resp, [e.message]);
