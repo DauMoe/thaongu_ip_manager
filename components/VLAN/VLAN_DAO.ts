@@ -36,7 +36,7 @@ export const GetDocsLimit = async(offset: number, limit: number): Promise<any> =
     await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
     const VLAN_Model = model<VLAN>(VLAN_COLLECTIONS, VLANSchema);
     return VLAN_Model
-        .find({})
+        .find({}, 'ip createdAt updatedAt')
         .limit(limit)
         .skip(offset)
         .sort({'createdAt': -1})
