@@ -12,6 +12,7 @@ export const MONGO_DB_URL           : string    = process.env.MONGO_URL as strin
 export const MONGO_DB_NAME          : string    = process.env.MONGO_DB_NAME as string           || "thao_ip_manager";
 export const BL_COLLECTIONS         : string    = process.env.BLACKLIST_COLLECTIONS as string   || 'blacklist';
 export const VLAN_COLLECTIONS       : string    = process.env.VLAN_COLLECTIONS as string        || 'VLAN';
+export const RULE_COLLECTIONS       : string    = process.env.RULE_COLLECTIONS as string        || 'rule';
 
 let MONGO_DB  : string;
 

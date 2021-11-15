@@ -13,3 +13,10 @@ export interface VLAN {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface Rule {
+    desc: string;
+    regex: string;
+    createdAt: Date;
+    updatedAt: Date;
+}

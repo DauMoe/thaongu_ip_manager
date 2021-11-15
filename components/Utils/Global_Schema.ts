@@ -1,5 +1,5 @@
 import {Schema} from "mongoose";
-import {BlackList, VLAN} from "./Global_Interface";
+import {BlackList, Rule, VLAN} from "./Global_Interface";
 
 export const BlackListSchema = new Schema<BlackList>({
     ip: {
@@ -27,4 +27,16 @@ export const VLANSchema = new Schema<VLAN>({
         unique: true
     },
     properties: {}
+}, {timestamps: true});
+
+
+export const RulesSchema = new Schema<Rule>({
+    desc: {
+        type: String,
+        default: "Fit regex"
+    },
+    regex: {
+        type: String,
+        default: ""
+    }
 }, {timestamps: true});
