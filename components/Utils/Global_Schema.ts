@@ -31,6 +31,12 @@ export const VLANSchema = new Schema<VLAN>({
 
 
 export const RulesSchema = new Schema<Rule>({
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+        index: true
+    },
     desc: {
         type: String,
         default: "Fit regex"

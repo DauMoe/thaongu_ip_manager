@@ -15,6 +15,7 @@ export interface VLAN {
 }
 
 export interface Rule {
+    name: string;
     desc: string;
     regex: string;
     createdAt: Date;

@@ -4,7 +4,7 @@ import LogConfig from "../LogConfig";
 import {getString} from "../Utils/Common";
 import {NewRule} from "./RulesDAO";
 
-const HandError = (e:any, msg: string) => {
+const HandError = (resp: Response, e:any, msg: string) => {
     console.log(msg);
     //@ts-ignore
     C201Resp(resp, [e.message]);
@@ -16,15 +16,16 @@ const HandError = (e:any, msg: string) => {
 export const AddNewRule = async (req: Request, resp: Response): Promise<void> => {
     let reqData = req.body;
     try {
-        let desc    = getString(reqData, "desc");
-        let regex   = getString(reqData, "regex");
+        let name: string    = getString(reqData, "name");
+        let desc: string    = getString(reqData, "desc");
+        let regex: string   = getString(reqData, "regex");
 
-        let {_doc} = await NewRule(desc, regex);
+        let {_doc} = await NewRule(name, desc, regex);
         _doc.id = _doc._id;
         delete _doc._id;
         delete _doc.__v;
         SuccessResp(resp, [_doc]);
     } catch (e) {
-        HandError(e, "(RulesServices.ts - AddNewRule) Err: ");
+        HandError(resp, e, "(RulesServices.ts - AddNewRule) Err: ");
     }
 }
