@@ -4,7 +4,7 @@
 /ip_fe/.pnp
 /ip_fe/.pnp.js
 
-/log
+/components/log/
 
 # testing
 /ip_fe/coverage
