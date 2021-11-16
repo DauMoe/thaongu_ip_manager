@@ -6,3 +6,12 @@
 [2021-11-10 16:10:39] [[31merror[39m] 'properties' must be an JSONObject
 [2021-11-10 17:14:20] [[31merror[39m] 'ip' is required!
 [2021-11-11 15:10:20] [[31merror[39m] Cannot read property '_doc' of null
+[2021-11-16 16:43:38] [[31merror[39m] E11000 duplicate key error collection: thao_ip_manager.rules index: name_1 dup key: { name: "Number" }
+[2021-11-16 16:45:09] [[31merror[39m] E11000 duplicate key error collection: thao_ip_manager.rules index: name_1 dup key: { name: "Number" }
+[2021-11-16 16:45:11] [[31merror[39m] E11000 duplicate key error collection: thao_ip_manager.rules index: name_1 dup key: { name: "Number" }
+[2021-11-16 16:45:12] [[31merror[39m] E11000 duplicate key error collection: thao_ip_manager.rules index: name_1 dup key: { name: "Number" }
+[2021-11-16 16:45:27] [[31merror[39m] E11000 duplicate key error collection: thao_ip_manager.rules index: name_1 dup key: { name: "Number" }
+[2021-11-16 16:45:28] [[31merror[39m] E11000 duplicate key error collection: thao_ip_manager.rules index: name_1 dup key: { name: "Number" }
+[2021-11-16 16:45:37] [[31merror[39m] E11000 duplicate key error collection: thao_ip_manager.rules index: name_1 dup key: { name: "Number" }
+[2021-11-16 16:45:50] [[31merror[39m] E11000 duplicate key error collection: thao_ip_manager.rules index: name_1 dup key: { name: "Number" }
+[2021-11-16 21:47:03] [[31merror[39m] Cannot read properties of undefined (reading 'length')

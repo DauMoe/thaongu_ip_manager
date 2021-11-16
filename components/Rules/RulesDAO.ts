@@ -12,3 +12,15 @@ export const NewRule = async (name: string, desc: string, regex: string): Promis
         regex: regex
     }).save();
 }
+
+export const GetRuleName = async(): Promise<any> => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const Rule_Model = model<Rule>(RULE_COLLECTIONS, RulesSchema);
+    return Rule_Model.find({}, 'id name');
+}
+
+export const GetRuleInfo = async(id: string): Promise<any> => {
+    await connect(MONGO_DB_BASEURL + MONGO_DB_NAME);
+    const Rule_Model = model<Rule>(RULE_COLLECTIONS, RulesSchema);
+    return Rule_Model.findOne({_id: id} );
+}
