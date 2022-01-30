@@ -199,8 +199,14 @@ export const NewBlackListExcel = async (req: Request, resp: Response): Promise<v
         }
         let ExcelData = XLSX.utils.sheet_to_json(workBooks.Sheets[workBooks.SheetNames[0]], {range: 2, header: KeyHeaders});
         try {
+            for (let i of ExcelData) {
+                // @ts-ignore
+                i.create_time = new Date(i.create_time).getTime();
+            }
+            console.log(ExcelData);
             await CreateBlackListDocsByExcel(ExcelData);
         } catch (e) {
+            console.log(e);
             let DuplicateIP = [['ID', 'IP', 'Validity', 'Create time', 'Created at', 'Updated at'], ['id', 'ip', 'desc', 'create_time', 'created_at', 'updated_at']];
             //@ts-ignore
             for (let i of e.writeErrors) {
@@ -217,6 +223,7 @@ export const NewBlackListExcel = async (req: Request, resp: Response): Promise<v
             XLSX.utils.book_append_sheet(workBooks, workSheet, "Duplicate IPs");
             await XLSX.writeFile(workBooks, serverPathFile);
             RespCustomCode(resp, 202, [{url: clientPathFile}]);
+            console.log(serverPathFile);
             setTimeout(() => {
                 fs.unlinkSync(serverPathFile);
             }, _TIMEOUT2DELETE);
@@ -225,6 +232,7 @@ export const NewBlackListExcel = async (req: Request, resp: Response): Promise<v
         SuccessResp(resp);
     } catch (e) {
         console.log("BlackListServices.ts - NewBlackListExcel: " + e);
+        console.log(e);
         C201Resp(resp, ["\"Have an error in (BlackListServices.ts - NewBlackListExcel)\""]);
     }
 }

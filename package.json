@@ -11,7 +11,7 @@
   },
   "type": "commonjs",
   "keywords": [],
-  "author": "",
+  "author": "DauMoe",
   "license": "ISC",
   "dependencies": {
     "@types/jest": "^27.0.2",
