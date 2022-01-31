@@ -16,7 +16,7 @@ const HandError = (resp: Response, e:any, msg: string) => {
 export const AddNewRule = async (req: Request, resp: Response): Promise<void> => {
     let reqData = req.body;
     try {
-        let name: string    = getString(reqData, "name");
+        let name: string    = getString(reqData, "name").toUpperCase();
         let regex: string   = getString(reqData, "regex");
         let desc: string    = getString(reqData, "desc", false);
         let NewRuleInfo: Rule = {
