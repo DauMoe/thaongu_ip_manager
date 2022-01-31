@@ -1,3 +1,5 @@
+import mysql from "mysql";
+
 const _MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Sep"];
 
 /*Date format reg: https://www.codegrepper.com/code-examples/javascript/regex+date+format+yyyy-mm-dd*/
@@ -82,6 +84,16 @@ export const getJSONObject = (data: any, field: string, isRequired: boolean = tr
     if (!isJSONObject(msg)) throw TypeError(`'${field}' must be an JSONObject`);
     return msg;
 }
+
+export const DB_POOL = () => {
+    return mysql.createPool({
+        connectionLimit : Number.parseInt(process.env.MAX_POOL_LIMIT as string) || 10,
+        host            : process.env.DB_HOST as string || "localhost",
+        user            : process.env.DB_USER as string || "root",
+        password        : process.env.DB_PASS as string || "",
+        database        : process.env.DB_NAME as string || "ip_manager"
+    });
+};
 /*===================================================================================================================================*/
 export const _EscapeReg: Function = (msg: string): string => {
     return msg.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d');

@@ -31,3 +31,10 @@ export const C201Resp: Function = (resp: Response, data: any): void => {
 export const Con4Java: Function = (msg: string): string => {
     return msg;
 }
+
+export const DB_RESP: Function = (code: Number, msg: any): any => {
+    return {
+        code: code,
+        msg: msg
+    }
+}

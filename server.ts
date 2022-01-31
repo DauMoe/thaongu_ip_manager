@@ -1,6 +1,4 @@
 import {Application, Request, Response} from "express";
-import BL_Router from "./components/BlackList/BlackListRouter";
-import VLAN_Router from "./components/VLAN/VLAN_Router";
 import LogConfig from "./components/LogConfig";
 import Rules_Router from "./components/Rules/RulesRouter";
 
@@ -39,8 +37,6 @@ app.get("/*", function (req: Request, resp: Response) {
 });
 
 /* API */
-app.use("/blacklist", BL_Router);
-app.use("/vlan", VLAN_Router);
 app.use("/rules", Rules_Router);
 
 httpServer.listen(PORT, function(): void {
