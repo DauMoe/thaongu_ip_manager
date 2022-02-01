@@ -38,8 +38,8 @@ app.get("/*", function (req: Request, resp: Response) {
 });
 
 /* API */
-app.use("/rules", Rules_Router);
-app.use("/obj_type", ObjectTypeRouter);
+app.use("/rules",       Rules_Router);
+app.use("/obj_type",    ObjectTypeRouter);
 
 httpServer.listen(PORT, function(): void {
     LogConfig.info('Server is running at: "http://<your device\'s IP>:' + PORT + '"');

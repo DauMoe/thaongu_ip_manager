@@ -9,7 +9,6 @@ export const GetListObjectType = async (req: Request, resp: Response) => {
     try {
         // @ts-ignore
         let result: ObjectType[] = await GetObjectTypeDAO();
-        console.log(result);
         let respResult = [];
         for (let i of result) {
             respResult.push({
