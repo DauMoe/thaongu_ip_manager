@@ -1,4 +1,5 @@
 import mysql from "mysql";
+import {NextFunction, Request, Response} from "express";
 
 const _MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Sep"];
 
@@ -83,6 +84,10 @@ export const getJSONObject = (data: any, field: string, isRequired: boolean = tr
     if (msg === undefined && !isRequired) return {};
     if (!isJSONObject(msg)) throw TypeError(`'${field}' must be an JSONObject`);
     return msg;
+}
+
+export const AuthenticationUser = (req: Request, resp: Response, next: NextFunction) => {
+    next();
 }
 
 export const DB_POOL = () => {

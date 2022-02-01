@@ -1,6 +1,7 @@
 import {Application, Request, Response} from "express";
 import LogConfig from "./components/LogConfig";
 import Rules_Router from "./components/Rules/RulesRouter";
+import ObjectTypeRouter from "./components/ObjectType/ObjectTypeRouter";
 
 const https                 = require("https");
 const http                  = require("http");
@@ -38,6 +39,7 @@ app.get("/*", function (req: Request, resp: Response) {
 
 /* API */
 app.use("/rules", Rules_Router);
+app.use("/obj_type", ObjectTypeRouter);
 
 httpServer.listen(PORT, function(): void {
     LogConfig.info('Server is running at: "http://<your device\'s IP>:' + PORT + '"');
