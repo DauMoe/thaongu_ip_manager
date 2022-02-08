@@ -30,7 +30,7 @@ export const InsertRule = async(NewRule: Rule) => {
             let {sql} = connection.query(SQL_QUERY, [NewRule.RULE_NAME, NewRule.RULE_DESC, NewRule.RULE_REGEX], function (err, result, fields) {
                 if (err) {
                     reject(err);
-                    console.log("============== SQL =============");
+                    console.log("============== InsertRule - SQL =============");
                     console.log(sql);
                 } else {
                     resolve("Thành công");
@@ -49,7 +49,7 @@ export const UpdateRuleDAO = async(NewRule: Rule) => {
             let {sql} = connection.query(SQL_QUERY, [NewRule.RULE_NAME, NewRule.RULE_DESC, NewRule.RULE_REGEX, NewRule.RULE_ID], function (err, result, fields) {
                 if (err) {
                     reject(err);
-                    console.log("============== SQL =============");
+                    console.log("============== UpdateRuleDAO - SQL =============");
                     console.log(sql);
                 } else {
                     resolve("Thành công");
@@ -68,7 +68,7 @@ export const DeleteRuleDAO = async(NewRule: Rule) => {
             let {sql} = connection.query(SQL_QUERY, [NewRule.RULE_ID], function (err, result, fields) {
                 if (err) {
                     reject(err);
-                    console.log("============== SQL =============");
+                    console.log("============== DeleteRuleDAO - SQL =============");
                     console.log(sql);
                 } else {
                     resolve("Thành công");
