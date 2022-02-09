@@ -6,8 +6,8 @@
 3. ReactJs
 
 ### How to install:
-1. Clone project from github
-2. Open `CMD` and **cd** to project
+1. Clone `dist` folder in project
+2. Open `CMD` and `cd` to project
 3. Run `npm install` to install requirement package
 4. Config in `.env` file: Database name, Collection name, ....
 5. Run `node server.js` to start server or follow instruction below

@@ -21,7 +21,7 @@ export const GetObjectDAO = async(obj_type_id: Number) => {
 
 export const GetObjectInfoDAO = async(obj_id: Number) => {
     return new Promise(function (resolve, reject) {
-        let SQL_QUERY = "SELECT a.*, b.*, d.RULE_REGEX FROM object a, property b, obj_pro c, rule d WHERE a.OBJ_ID = ? AND b.PRO_ID = c.PRO_ID AND a.OBJ_ID = c.OBJ_ID AND b.RULE_ID = d.RULE_ID";
+        let SQL_QUERY = "SELECT a.*, b.*, c.PRO_VALUE, c.CREATED_AT, c.UPDATED_AT, d.RULE_REGEX FROM object a, property b, obj_pro c, rule d WHERE a.OBJ_ID = ? AND b.PRO_ID = c.PRO_ID AND a.OBJ_ID = c.OBJ_ID AND b.RULE_ID = d.RULE_ID";
         DB_POOL().getConnection(function (err, connection) {
             connection.release();
             if (err) reject(err);

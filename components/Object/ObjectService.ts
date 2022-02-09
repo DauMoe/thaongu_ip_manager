@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {C201Resp, SuccessResp} from "../Utils/API_RESPONSE";
 import {getNumber, getString} from "../Utils/Common";
 import {AddObjectPropertyDAO, GetObjectDAO, GetObjectInfoDAO} from "./ObjectDAO";
+import moment from "moment";
 
 export const GetObject = async(req: Request, resp: Response) => {
     let reqData = req.body;
@@ -50,8 +51,11 @@ export const GetObjectInfo = async(req: Request, resp: Response) => {
                 "obj_type_id": i.OBJ_TYPE_ID    === null ? -1 : i.OBJ_TYPE_ID,
                 "pro_name": i.PRO_NAME          === null ? "" : i.PRO_NAME,
                 "pro_desc": i.PRO_DESC          === null ? "" : i.PRO_DESC,
+                "pro_value": i.PRO_VALUE        === null ? "" : i.PRO_VALUE,
                 "rule_id": i.RULE_ID            === null ? -1 : i.RULE_ID,
-                "rule_regex": i.RULE_REGEX      === null ? "" : i.RULE_REGEX
+                "rule_regex": i.RULE_REGEX      === null ? "" : i.RULE_REGEX,
+                "created_at": i.CREATED_AT      === null ? "" : moment(i.CREATED_AT).format("DD/MM/YYYY HH:mm:ss"),
+                "updated_at": i.CREATED_AT      === null ? "" : moment(i.UPDATED_AT).format("DD/MM/YYYY HH:mm:ss"),
             });
         }
         SuccessResp(resp, respResult);
