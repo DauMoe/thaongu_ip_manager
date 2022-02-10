@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {C201Resp, SuccessResp} from "../Utils/API_RESPONSE";
-import {getNumber, getString} from "../Utils/Common";
-import {AddObjectPropertyDAO, GetObjectDAO, GetObjectInfoDAO} from "./ObjectDAO";
+import {getJSONArray, getNumber, getString} from "../Utils/Common";
+import {AddObjectPropertyDAO, GetObjectDAO, GetObjectInfoDAO, UpdatePropertyValueDAO} from "./ObjectDAO";
 import moment from "moment";
 
 export const GetObject = async(req: Request, resp: Response) => {
@@ -49,6 +49,7 @@ export const GetObjectInfo = async(req: Request, resp: Response) => {
                 "obj_name": i.OBJ_NAME          === null ? "" : i.OBJ_NAME,
                 "obj_desc": i.OBJ_DESC          === null ? "" : i.OBJ_DESC,
                 "obj_type_id": i.OBJ_TYPE_ID    === null ? -1 : i.OBJ_TYPE_ID,
+                "pro_id": i.PRO_ID              === null ? -1 : i.PRO_ID,
                 "pro_name": i.PRO_NAME          === null ? "" : i.PRO_NAME,
                 "pro_desc": i.PRO_DESC          === null ? "" : i.PRO_DESC,
                 "pro_value": i.PRO_VALUE        === null ? "" : i.PRO_VALUE,
@@ -88,6 +89,28 @@ export const AddObjectProperty = async(req: Request, resp: Response) => {
         } else {
             SuccessResp(resp, "Thành công");
         }
+    } catch (e) {
+        //@ts-ignore
+        if (e.hasOwnProperty("message")) {
+            //@ts-ignore
+            C201Resp(resp, e.message);
+            return;
+        }
+        //@ts-ignore
+        if (e.hasOwnProperty("sqlMessage")) {
+            //@ts-ignore
+            C201Resp(resp, e.sqlMessage);
+            return;
+        }
+    }
+}
+
+export const UpdatePropertyValue = async(req: Request, resp: Response) => {
+    let reqData = req.body;
+    try {
+        let list_property: any[] = getJSONArray(reqData, "list_property");
+        await UpdatePropertyValueDAO(list_property);
+        SuccessResp(resp, "");
     } catch (e) {
         //@ts-ignore
         if (e.hasOwnProperty("message")) {
