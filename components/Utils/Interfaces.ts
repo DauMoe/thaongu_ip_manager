@@ -16,6 +16,7 @@ export interface ObjectType {
     OBJ_TYPE_ID: Number;
     OBJ_TYPE_NAME: string;
     OBJ_TYPE_DESC: string;
+    ICON: string;
     CREATED_AT: string;
     UPDATED_AT: string;
 }

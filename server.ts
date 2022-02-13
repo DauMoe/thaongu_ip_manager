@@ -3,6 +3,7 @@ import LogConfig from "./components/LogConfig";
 import Rules_Router from "./components/Rules/RulesRouter";
 import ObjectTypeRouter from "./components/ObjectType/ObjectTypeRouter";
 import ObjectRouter from "./components/Object/ObjectRouter";
+import PropertyRouter from "./components/Property/PropertyRouter";
 
 const https                 = require("https");
 const http                  = require("http");
@@ -42,6 +43,7 @@ app.get("/*", function (req: Request, resp: Response) {
 app.use("/rules",       Rules_Router);
 app.use("/obj_type",    ObjectTypeRouter);
 app.use("/obj",         ObjectRouter);
+app.use("/pro",         PropertyRouter);
 
 httpServer.listen(PORT, function(): void {
     LogConfig.info('Server is running at: "http://<your device\'s IP>:' + PORT + '"');

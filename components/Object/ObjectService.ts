@@ -110,7 +110,7 @@ export const UpdatePropertyValue = async(req: Request, resp: Response) => {
     try {
         let list_property: any[] = getJSONArray(reqData, "list_property");
         await UpdatePropertyValueDAO(list_property);
-        SuccessResp(resp, "");
+        SuccessResp(resp, "Update successfully!");
     } catch (e) {
         //@ts-ignore
         if (e.hasOwnProperty("message")) {
