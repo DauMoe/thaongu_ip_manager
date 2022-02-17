@@ -50,9 +50,19 @@ export const getNumber = (data: any, field: string, isRequired: boolean = true):
 export const getStringArray = (data: any, field: string, isRequired: boolean = true): any[] => {
     CheckInputType(data, field, isRequired);
     let msg: any[] = data[`${field}`];
-    if (!isArray(msg)) throw TypeError(`'${field}' must be an array`);
+    if (Array.isArray(msg) === false) throw TypeError(`'${field}' must be an array`);
+    // msg.forEach((item, index) => {
+    //     if (Array.isArray(item) === true || isJSONObject(item)) throw TypeError(`Item at index ${index} not a string`);
+    // });
+    return msg;
+}
+
+export const getNumberArray = (data: any, field: string, isRequired: boolean = true): Number[] => {
+    CheckInputType(data, field, isRequired);
+    let msg: any[] = data[`${field}`];
+    if (Array.isArray(msg) === false) throw TypeError(`'${field}' must be an array`);
     msg.forEach((item, index) => {
-        if (isArray(item) || isJSONObject(item)) throw TypeError(`Item at index ${index} not a string`);
+        if (isNaN(Number.parseFloat(item))) throw TypeError(`Item at index ${index} not a number`);
     });
     return msg;
 }
@@ -60,9 +70,9 @@ export const getStringArray = (data: any, field: string, isRequired: boolean = t
 export const getSubArray = (data: any, field: string, isRequired: boolean = true): any => {
     CheckInputType(data, field, isRequired);
     let msg: any[] = data[`${field}`];
-    if (!isArray(msg)) throw TypeError(`'${field}' must be an array`);
+    if (Array.isArray(msg) === false) throw TypeError(`'${field}' must be an array`);
     msg.forEach((item, index) => {
-        if (!isArray(item)) throw TypeError(`Item at index ${index} not an Array`);
+        if (Array.isArray(item) === false) throw TypeError(`Item at index ${index} not an Array`);
     });
     return msg;
 }
@@ -71,7 +81,7 @@ export const getJSONArray = (data: any, field: string, isRequired: boolean = tru
     CheckInputType(data, field, isRequired);
     let msg: any[] = data[`${field}`];
     if (msg === undefined && !isRequired) return [];
-    if (!isArray(msg)) throw TypeError(`'${field}' must be an array`);
+    if (Array.isArray(msg) === false) throw TypeError(`'${field}' must be an array`);
     msg.forEach((item, index) => {
         if (!isJSONObject(item)) throw TypeError(`Item at index ${index} not a JSON`);
     });
@@ -90,15 +100,24 @@ export const AuthenticationUser = (req: Request, resp: Response, next: NextFunct
     next();
 }
 
-export const DB_POOL = () => {
-    return mysql.createPool({
-        connectionLimit : Number.parseInt(process.env.MAX_POOL_LIMIT as string) || 10,
-        host            : process.env.DB_HOST as string || "localhost",
-        user            : process.env.DB_USER as string || "root",
-        password        : process.env.DB_PASS as string || "",
-        database        : process.env.DB_NAME as string || "ip_manager"
-    });
-};
+//https://stackoverflow.com/questions/41442820/undefined-connection-during-database-pooling-in-node-js
+const pool = mysql.createPool({
+    connectionLimit : Number.parseInt(process.env.MAX_POOL_LIMIT as string) || 10,
+    host            : process.env.DB_HOST as string || "localhost",
+    user            : process.env.DB_USER as string || "root",
+    password        : process.env.DB_PASS as string || "",
+    database        : process.env.DB_NAME as string || "ip_manager"
+});
+
+export const connectionPool = pool.getConnection.bind(pool);
+
+export const connection = mysql.createConnection({
+    host            : process.env.DB_HOST as string || "localhost",
+    user            : process.env.DB_USER as string || "root",
+    password        : process.env.DB_PASS as string || "",
+    database        : process.env.DB_NAME as string || "ip_manager"
+});
+
 /*===================================================================================================================================*/
 export const _EscapeReg: Function = (msg: string): string => {
     return msg.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d');

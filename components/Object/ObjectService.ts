@@ -1,7 +1,14 @@
 import {Request, Response} from "express";
 import {C201Resp, SuccessResp} from "../Utils/API_RESPONSE";
-import {getJSONArray, getNumber, getString} from "../Utils/Common";
-import {AddObjectPropertyDAO, GetObjectDAO, GetObjectInfoDAO, UpdatePropertyValueDAO} from "./ObjectDAO";
+import {getJSONArray, getNumber, getNumberArray, getString} from "../Utils/Common";
+import {
+    AddObjectPropertyDAO,
+    DeleteObjectDAO,
+    GetObjectDAO,
+    GetObjectInfoDAO,
+    InsertObjectDAO,
+    UpdatePropertyValueDAO
+} from "./ObjectDAO";
 import moment from "moment";
 
 export const GetObject = async(req: Request, resp: Response) => {
@@ -111,6 +118,53 @@ export const UpdatePropertyValue = async(req: Request, resp: Response) => {
         let list_property: any[] = getJSONArray(reqData, "list_property");
         await UpdatePropertyValueDAO(list_property);
         SuccessResp(resp, "Update successfully!");
+    } catch (e) {
+        //@ts-ignore
+        if (e.hasOwnProperty("message")) {
+            //@ts-ignore
+            C201Resp(resp, e.message);
+            return;
+        }
+        //@ts-ignore
+        if (e.hasOwnProperty("sqlMessage")) {
+            //@ts-ignore
+            C201Resp(resp, e.sqlMessage);
+            return;
+        }
+    }
+}
+
+export const DeleteObject = async(req: Request, resp: Response) => {
+    let reqData = req.body;
+    try {
+        let obj_id: Number = getNumber(reqData, "obj_id");
+        await DeleteObjectDAO(obj_id);
+        SuccessResp(resp, "Delete successfully!");
+    } catch (e) {
+        //@ts-ignore
+        if (e.hasOwnProperty("message")) {
+            //@ts-ignore
+            C201Resp(resp, e.message);
+            return;
+        }
+        //@ts-ignore
+        if (e.hasOwnProperty("sqlMessage")) {
+            //@ts-ignore
+            C201Resp(resp, e.sqlMessage);
+            return;
+        }
+    }
+}
+
+export const InsertObject = async(req: Request, resp: Response) => {
+    let reqData = req.body;
+    try {
+        let obj_name: string    = getString(reqData, "obj_name").toUpperCase();
+        let obj_desc: string    = getString(reqData, "obj_desc", false);
+        let obj_type_id: Number = getNumber(reqData, "obj_type_id");
+        let list_pro: Number[]  = getNumberArray(reqData, "list_pro_id");
+        await InsertObjectDAO(obj_name, obj_desc, obj_type_id, list_pro);
+        SuccessResp(resp, "Created!");
     } catch (e) {
         //@ts-ignore
         if (e.hasOwnProperty("message")) {
