@@ -7,8 +7,9 @@ import {getJSONArray, getNumber, getNumberArray, getString} from "../Utils/Commo
 export const GetProperty = async(req: Request, resp: Response) => {
     let reqData = req.body;
     try {
+        let obj_type_id: Number = getNumber(reqData, "obj_type_id", false);
         // @ts-ignore
-        let result: any[] = await GetPropertyDAO();
+        let result: any[] = await GetPropertyDAO(obj_type_id);
         let respResult = [];
         for (let i of result) {
             respResult.push({

@@ -41,7 +41,7 @@ export const getString = (data: any, field: string, isRequired: boolean = true):
 export const getNumber = (data: any, field: string, isRequired: boolean = true): number => {
     CheckInputType(data, field, isRequired);
     let msg: number = data[`${field}`];
-    if (msg === undefined && !isRequired) return -10e4;
+    if (msg === undefined && !isRequired) return -1;
     msg = Number.parseInt(data[`${field}`]);
     if (isNaN(msg)) throw TypeError(`'${field}' must be a number`);
     return msg;

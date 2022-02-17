@@ -1,9 +1,16 @@
 import {connection} from "../Utils/Common";
 
-export const GetPropertyDAO = async() => {
+export const GetPropertyDAO = async(obj_type_id: Number) => {
     return new Promise(function (resolve, reject) {
-        let SQL_QUERY = "SELECT * FROM property";
-        let {sql} = connection.query(SQL_QUERY, [], function (err, result, fields) {
+        let SQL_QUERY: string, BindingValues: Number[] = [];
+        if (obj_type_id === -1) {
+            SQL_QUERY = "SELECT * FROM property";
+            BindingValues = [];
+        } else {
+            SQL_QUERY = "SELECT b.* FROM obj_type_property a, property b WHERE a.PRO_ID = b.PRO_ID AND a.OBJ_TYPE_ID = ?";
+            BindingValues = [obj_type_id];
+        }
+        let {sql} = connection.query(SQL_QUERY, BindingValues, function (err, result, fields) {
             if (err) {
                 reject(err);
                 console.log("============== GetPropertyDAO - SQL =============");
