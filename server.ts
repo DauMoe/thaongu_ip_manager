@@ -25,7 +25,7 @@ const httpsServer           = https.createServer(credential, app);
 const httpServer            = http.createServer(app);
 
 /*      Public folder   */
-app.use("/asset", express.static(path.join(__dirname, 'public')));
+app.use("/asset", express.static(path.join(__dirname, 'asset')));
 app.use(express.static(path.join(__dirname, 'build')));
 
 /*      Pass CORS   */

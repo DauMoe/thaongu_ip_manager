@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import moment from "moment";
 import {C201Resp, SuccessResp} from "../Utils/API_RESPONSE";
-import {GetPropertyDAO, GetPropertyInfoDAO, UpdatePropertyDAO, DeletePropertyDAO, GetListPropertyByObjIDDAO, AddProperty2ObjectDAO} from "./PropertyDAO";
+import {GetPropertyDAO, GetPropertyInfoDAO, UpdatePropertyDAO, DeletePropertyDAO, GetListPropertyByObjIDDAO, AddProperty2ObjectDAO, InsertPropertyDAO} from "./PropertyDAO";
 import {getJSONArray, getNumber, getNumberArray, getString} from "../Utils/Common";
 
 export const GetProperty = async(req: Request, resp: Response) => {
@@ -175,6 +175,43 @@ export const AddProperty2Object = async(req: Request, resp: Response) => {
         let list_pro_id : Number[]  = getNumberArray(reqData, "list_pro_id");
         let obj_type_id : Number    = getNumber(reqData, "obj_type_id");
         await AddProperty2ObjectDAO(obj_id, obj_type_id, list_pro_id);
+        SuccessResp(resp, "Successful!");
+    } catch (e) {
+        //@ts-ignore
+        if (e.hasOwnProperty("message")) {
+            //@ts-ignore
+            C201Resp(resp, e.message);
+            return;
+        }
+        //@ts-ignore
+        if (e.hasOwnProperty("sqlMessage")) {
+            //@ts-ignore
+            C201Resp(resp, e.sqlMessage);
+            return;
+        }
+    }
+}
+
+export const InsertProperty = async(req: Request, resp: Response) => {
+    let reqData = req.body;
+    try {
+        let pro_name    : string    = getString(reqData, "pro_name").toUpperCase();
+        let pro_desc    : string    = getString(reqData, "pro_desc");
+        let rule_id     : Number    = getNumber(reqData, "rule_id");
+        let list_obj_type: any[]    = getJSONArray(reqData, "list_obj_type");
+
+        let msg = "";
+        list_obj_type.map(function(item, index) {
+            if (!item.hasOwnProperty("obj_type_id") || !item.hasOwnProperty("is_required")) {
+                msg += `item at index ${index} missing 'obj_type_id' or 'is_requried' property, `;
+            }
+        });
+        if (msg !== "") {
+            C201Resp(resp, msg);
+            return;
+        }
+
+        await InsertPropertyDAO(pro_name, pro_desc, rule_id, list_obj_type);
         SuccessResp(resp, "Successful!");
     } catch (e) {
         //@ts-ignore

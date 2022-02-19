@@ -3,8 +3,8 @@
 /ip_fe/node_modules
 /ip_fe/.pnp
 /ip_fe/.pnp.js
-/dist
-/build
+./build
+./dist
 
 /components/log/
 

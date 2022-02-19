@@ -139,6 +139,38 @@ export const DeletePropertyDAO = async(pro_id: Number) => {
     });
 }
 
+export const InsertPropertyDAO = async(pro_name: string, pro_desc: string, rule_id: Number, list_obj_type: any[]) => {
+    return new Promise(function (resolve, reject) {
+        let SQL_QUERY = "INSERT INTO property (PRO_NAME, PRO_DESC, RULE_ID) VALUES (?, ?, ?)";
+        let {sql} = connection.query(SQL_QUERY, [pro_name, pro_desc, rule_id], function(e, r) {
+            if (e) {
+                console.log("============== InsertPropertyDAO - SQL =============");
+                console.log(sql);
+                reject(new Error("This property's name existed!"));
+            } else {
+                if (list_obj_type.length > 0) {
+                    SQL_QUERY = "INSERT INTO obj_type_property (OBJ_TYPE_ID, PRO_ID, IS_REQUIRED) VALUES ?";
+                    let BindingValues = [];
+                    for (let i of list_obj_type) {
+                        BindingValues.push([i.obj_type_id, r.insertId, +i.is_required]);
+                    }
+                    let {sql} = connection.query(SQL_QUERY, [BindingValues], function (e1, r1) {
+                        if (e1) {
+                            console.log("============== InsertPropertyDAO - SQL =============");
+                            console.log(sql);
+                            reject(new Error(`'${pro_name}' is created but CAN NOT assign object type. Please update object type later!`));
+                        } else {
+                            resolve(r1);
+                        }
+                    });
+                } else {
+                    resolve(r);
+                }
+            }
+        });
+    });
+}
+
 export const GetListPropertyByObjIDDAO = async (obj_id: Number) => {
     return new Promise(function (resolve, reject) {
         let SELECT_ALL = "SELECT a.*, b.* FROM obj_type_property a, property b WHERE a.OBJ_TYPE_ID = (SELECT OBJ_TYPE_ID FROM object WHERE OBJ_ID = ?) AND a.PRO_ID = b.PRO_ID";

@@ -1,5 +1,6 @@
 import mysql from "mysql";
 import {NextFunction, Request, Response} from "express";
+import util from "util";
 
 const _MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Sep"];
 
@@ -118,6 +119,8 @@ export const connection = mysql.createConnection({
     database        : process.env.DB_NAME as string || "ip_manager"
 });
 
+export const query = util.promisify(connection.query).bind(connection);
+
 /*===================================================================================================================================*/
 export const _EscapeReg: Function = (msg: string): string => {
     return msg.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d');
@@ -146,3 +149,37 @@ export const ConvertTimeStamp2String = (timestamp: number | string | Date, getDa
     }
     return msg;
 }
+
+const ListBaseExcelColsName: string[] = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+export const GetCellNameByIndex = (cols_index: number, rows_index: number, get_list_cell_name: Boolean = false): string[] => {
+    let temp = Math.floor(cols_index/(ListBaseExcelColsName.length-1));
+    if (temp > 9) {
+        throw Error("Sorry, I can't do that ~.~");
+    }
+
+    if (get_list_cell_name === true) {
+        let temp: string[] = [];
+        let times: number =  Math.floor(cols_index/(ListBaseExcelColsName.length-1));
+        for (let i=0; i<times; i++) {
+            ListBaseExcelColsName.map(function(item, index) {
+                if (index > 0) {
+                    temp.push(`${ListBaseExcelColsName[i]}${ListBaseExcelColsName[index]}${rows_index}`);
+                }
+            });
+        }
+        for (let i=0; i<cols_index%(ListBaseExcelColsName.length-1); i++) {
+            temp.push(`${ListBaseExcelColsName[times]}${ListBaseExcelColsName[i+1]}${rows_index}`);
+        }
+        return temp;
+    } else {
+        let msg = "";
+        if (temp > 0) {
+            msg += ListBaseExcelColsName[temp];
+        }
+        msg += ListBaseExcelColsName[cols_index%(ListBaseExcelColsName.length-1)] + "" + rows_index;
+        return [msg];
+    }
+}
+
+export const DELETE_FILE_TIMEOUT: number = 1000 * 30;//30s
