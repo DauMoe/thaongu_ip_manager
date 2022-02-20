@@ -1,0 +1,6 @@
+một OBJECT thuộc một OBJECT TYPE
+một OBJECT TYPE chứa nhiều OBJECT
+một PROPERTY thuộc nhiều OBJECT
+một OBJECT có nhiều PROPERTY
+một PROPERTY chứa một RULE
+một RULE có thể thuộc nhiều PROPERTY

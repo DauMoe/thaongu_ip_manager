@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var express_1 = __importDefault(require("express"));
+var Common_1 = require("../Utils/Common");
+var ObjectService_1 = require("./ObjectService");
+var multiparty_express_1 = __importDefault(require("multiparty-express"));
+var ObjectRouter = express_1.default.Router();
+ObjectRouter.post("/list", Common_1.AuthenticationUser, ObjectService_1.GetObject);
+ObjectRouter.post("/get_object_info", Common_1.AuthenticationUser, ObjectService_1.GetObjectInfo);
+ObjectRouter.post("/add_property_to_object", Common_1.AuthenticationUser, ObjectService_1.AddObjectProperty);
+ObjectRouter.post("/update_property", Common_1.AuthenticationUser, ObjectService_1.UpdatePropertyValue);
+ObjectRouter.post("/delete", Common_1.AuthenticationUser, ObjectService_1.DeleteObject);
+ObjectRouter.post("/insert", Common_1.AuthenticationUser, ObjectService_1.InsertObject);
+ObjectRouter.post("/get_excel_template", Common_1.AuthenticationUser, ObjectService_1.GetCreateExcelTemplate);
+ObjectRouter.post("/get_obj_type_template", Common_1.AuthenticationUser, ObjectService_1.GetListObjectTypeExcelTemplate);
+ObjectRouter.post("/insert_object_excel", (0, multiparty_express_1.default)(), Common_1.AuthenticationUser, ObjectService_1.InsertObjectExcel);
+ObjectRouter.post("/export_data", Common_1.AuthenticationUser, ObjectService_1.ExportData);
+exports.default = ObjectRouter;
