@@ -11,4 +11,5 @@ Rules_Router.post("/list", Common_1.AuthenticationUser, RulesServices_1.GetListR
 Rules_Router.post("/insert", Common_1.AuthenticationUser, RulesServices_1.AddNewRule);
 Rules_Router.post("/update", Common_1.AuthenticationUser, RulesServices_1.UpdateRule);
 Rules_Router.post("/delete", Common_1.AuthenticationUser, RulesServices_1.DeleteRule);
+Rules_Router.post("/search", Common_1.AuthenticationUser, RulesServices_1.SearchByRuleName);
 exports.default = Rules_Router;

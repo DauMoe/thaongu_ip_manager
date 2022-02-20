@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExportData = exports.InsertObjectExcel = exports.GetListObjectTypeExcelTemplate = exports.GetCreateExcelTemplate = exports.InsertObject = exports.DeleteObject = exports.UpdatePropertyValue = exports.AddObjectProperty = exports.GetObjectInfo = exports.GetObject = void 0;
+exports.SearchByObjectName = exports.ExportData = exports.InsertObjectExcel = exports.GetListObjectTypeExcelTemplate = exports.GetCreateExcelTemplate = exports.InsertObject = exports.DeleteObject = exports.UpdatePropertyValue = exports.AddObjectProperty = exports.GetObjectInfo = exports.GetObject = void 0;
 var API_RESPONSE_1 = require("../Utils/API_RESPONSE");
 var Common_1 = require("../Utils/Common");
 var ObjectDAO_1 = require("./ObjectDAO");
@@ -134,6 +134,7 @@ var GetObjectInfo = function (req, resp) { return __awaiter(void 0, void 0, void
                         "obj_type_id": i.OBJ_TYPE_ID === null ? -1 : i.OBJ_TYPE_ID,
                         "pro_id": i.PRO_ID === null ? -1 : i.PRO_ID,
                         "pro_name": i.PRO_NAME === null ? "" : i.PRO_NAME,
+                        "rule_name": i.RULE_NAME === null ? "" : i.RULE_NAME,
                         "pro_desc": i.PRO_DESC === null ? "" : i.PRO_DESC,
                         "pro_value": i.PRO_VALUE === null ? "" : i.PRO_VALUE,
                         "rule_id": i.RULE_ID === null ? -1 : i.RULE_ID,
@@ -675,3 +676,49 @@ var ExportData = function (req, resp) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.ExportData = ExportData;
+var SearchByObjectName = function (req, resp) { return __awaiter(void 0, void 0, void 0, function () {
+    var reqData, obj_name, obj_type_id, result, respResult, _i, result_6, i, e_11;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                reqData = req.body;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                obj_name = (0, Common_1.getString)(reqData, "obj_name").toUpperCase();
+                obj_type_id = (0, Common_1.getNumber)(reqData, "obj_type_id");
+                return [4 /*yield*/, (0, ObjectDAO_1.SearchByObjectNameDAO)(obj_name, obj_type_id)];
+            case 2:
+                result = _a.sent();
+                respResult = [];
+                for (_i = 0, result_6 = result; _i < result_6.length; _i++) {
+                    i = result_6[_i];
+                    respResult.push({
+                        "obj_id": i.OBJ_ID === null ? -1 : i.OBJ_ID,
+                        "obj_name": i.OBJ_NAME === null ? "" : i.OBJ_NAME,
+                        "obj_desc": i.OBJ_DESC === null ? "" : i.OBJ_DESC,
+                        "obj_type_id": i.OBJ_TYPE_ID === null ? -1 : i.OBJ_TYPE_ID
+                    });
+                }
+                (0, API_RESPONSE_1.SuccessResp)(resp, respResult);
+                return [3 /*break*/, 4];
+            case 3:
+                e_11 = _a.sent();
+                //@ts-ignore
+                if (e_11.hasOwnProperty("message")) {
+                    //@ts-ignore
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_11.message);
+                    return [2 /*return*/];
+                }
+                //@ts-ignore
+                if (e_11.hasOwnProperty("sqlMessage")) {
+                    //@ts-ignore
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_11.sqlMessage);
+                    return [2 /*return*/];
+                }
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.SearchByObjectName = SearchByObjectName;

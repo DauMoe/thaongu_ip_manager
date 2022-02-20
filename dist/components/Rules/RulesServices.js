@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteRule = exports.UpdateRule = exports.AddNewRule = exports.GetListRules = void 0;
+exports.DeleteRule = exports.UpdateRule = exports.AddNewRule = exports.SearchByRuleName = exports.GetListRules = void 0;
 var API_RESPONSE_1 = require("../Utils/API_RESPONSE");
 var LogConfig_1 = __importDefault(require("../LogConfig"));
 var Common_1 = require("../Utils/Common");
@@ -97,8 +97,55 @@ var GetListRules = function (req, resp) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.GetListRules = GetListRules;
+var SearchByRuleName = function (req, resp) { return __awaiter(void 0, void 0, void 0, function () {
+    var reqData, rule_name, result, respResult, _i, result_2, i, e_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                reqData = req.body;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                rule_name = (0, Common_1.getString)(reqData, "rule_name").toUpperCase();
+                return [4 /*yield*/, (0, RulesDAO_1.SearchByRuleNameDAO)(rule_name)];
+            case 2:
+                result = _a.sent();
+                respResult = [];
+                for (_i = 0, result_2 = result; _i < result_2.length; _i++) {
+                    i = result_2[_i];
+                    respResult.push({
+                        "rule_id": i.RULE_ID === null ? -1 : i.RULE_ID,
+                        "rule_name": i.RULE_NAME === null ? "" : i.RULE_NAME,
+                        "rule_desc": i.RULE_DESC === null ? "" : i.RULE_DESC,
+                        "rule_regex": i.RULE_REGEX === null ? "" : i.RULE_REGEX,
+                        "created_at": i.CREATED_AT === null ? "" : (0, moment_1.default)(i.CREATED_AT).format("DD/MM/YYYY HH:mm:ss"),
+                        "updated_at": i.UPDATED_AT === null ? "" : (0, moment_1.default)(i.UPDATED_AT).format("DD/MM/YYYY HH:mm:ss")
+                    });
+                }
+                (0, API_RESPONSE_1.SuccessResp)(resp, respResult);
+                return [3 /*break*/, 4];
+            case 3:
+                e_2 = _a.sent();
+                //@ts-ignore
+                if (e_2.hasOwnProperty("message")) {
+                    //@ts-ignore
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_2.message);
+                    return [2 /*return*/];
+                }
+                //@ts-ignore
+                if (e_2.hasOwnProperty("sqlMessage")) {
+                    //@ts-ignore
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_2.sqlMessage);
+                    return [2 /*return*/];
+                }
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.SearchByRuleName = SearchByRuleName;
 var AddNewRule = function (req, resp) { return __awaiter(void 0, void 0, void 0, function () {
-    var reqData, name_1, regex, desc, NewRuleInfo, result, e_2;
+    var reqData, name_1, regex, desc, NewRuleInfo, result, e_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -123,22 +170,22 @@ var AddNewRule = function (req, resp) { return __awaiter(void 0, void 0, void 0,
                 (0, API_RESPONSE_1.SuccessResp)(resp, result);
                 return [3 /*break*/, 4];
             case 3:
-                e_2 = _a.sent();
+                e_3 = _a.sent();
                 //@ts-ignore
-                if (e_2.code === 11000) {
+                if (e_3.code === 11000) {
                     (0, API_RESPONSE_1.C201Resp)(resp, "'" + (0, Common_1.getString)(reqData, "name") + "' has been declare");
                     return [2 /*return*/];
                 }
                 //@ts-ignore
-                if (e_2.hasOwnProperty("message")) {
+                if (e_3.hasOwnProperty("message")) {
                     //@ts-ignore
-                    (0, API_RESPONSE_1.C201Resp)(resp, e_2.message);
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_3.message);
                     return [2 /*return*/];
                 }
                 //@ts-ignore
-                if (e_2.hasOwnProperty("sqlMessage")) {
+                if (e_3.hasOwnProperty("sqlMessage")) {
                     //@ts-ignore
-                    (0, API_RESPONSE_1.C201Resp)(resp, e_2.sqlMessage);
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_3.sqlMessage);
                     return [2 /*return*/];
                 }
                 return [3 /*break*/, 4];
@@ -148,7 +195,7 @@ var AddNewRule = function (req, resp) { return __awaiter(void 0, void 0, void 0,
 }); };
 exports.AddNewRule = AddNewRule;
 var UpdateRule = function (req, resp) { return __awaiter(void 0, void 0, void 0, function () {
-    var reqData, rule_id, rule_name, rule_desc, rule_regex, NewRuleData, result, e_3;
+    var reqData, rule_id, rule_name, rule_desc, rule_regex, NewRuleData, result, e_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -174,18 +221,18 @@ var UpdateRule = function (req, resp) { return __awaiter(void 0, void 0, void 0,
                 (0, API_RESPONSE_1.SuccessResp)(resp, result);
                 return [3 /*break*/, 4];
             case 3:
-                e_3 = _a.sent();
-                console.log(e_3);
+                e_4 = _a.sent();
+                console.log(e_4);
                 //@ts-ignore
-                if (e_3.hasOwnProperty("message")) {
+                if (e_4.hasOwnProperty("message")) {
                     //@ts-ignore
-                    (0, API_RESPONSE_1.C201Resp)(resp, e_3.message);
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_4.message);
                     return [2 /*return*/];
                 }
                 //@ts-ignore
-                if (e_3.hasOwnProperty("sqlMessage")) {
+                if (e_4.hasOwnProperty("sqlMessage")) {
                     //@ts-ignore
-                    (0, API_RESPONSE_1.C201Resp)(resp, e_3.sqlMessage);
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_4.sqlMessage);
                     return [2 /*return*/];
                 }
                 return [3 /*break*/, 4];
@@ -195,7 +242,7 @@ var UpdateRule = function (req, resp) { return __awaiter(void 0, void 0, void 0,
 }); };
 exports.UpdateRule = UpdateRule;
 var DeleteRule = function (req, resp) { return __awaiter(void 0, void 0, void 0, function () {
-    var reqData, rule_id, result, e_4;
+    var reqData, rule_id, result, e_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -215,18 +262,18 @@ var DeleteRule = function (req, resp) { return __awaiter(void 0, void 0, void 0,
                 }
                 return [3 /*break*/, 4];
             case 3:
-                e_4 = _a.sent();
-                console.log(e_4);
+                e_5 = _a.sent();
+                console.log(e_5);
                 //@ts-ignore
-                if (e_4.hasOwnProperty("message")) {
+                if (e_5.hasOwnProperty("message")) {
                     //@ts-ignore
-                    (0, API_RESPONSE_1.C201Resp)(resp, e_4.message);
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_5.message);
                     return [2 /*return*/];
                 }
                 //@ts-ignore
-                if (e_4.hasOwnProperty("sqlMessage")) {
+                if (e_5.hasOwnProperty("sqlMessage")) {
                     //@ts-ignore
-                    (0, API_RESPONSE_1.C201Resp)(resp, e_4.sqlMessage);
+                    (0, API_RESPONSE_1.C201Resp)(resp, e_5.sqlMessage);
                     return [2 /*return*/];
                 }
                 return [3 /*break*/, 4];

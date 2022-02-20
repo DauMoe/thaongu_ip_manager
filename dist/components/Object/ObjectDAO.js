@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExportDataDAO = exports.InsertObjectExcelDAO = exports.GetListPropertyByObjTypeIDDAO = exports.InsertObjectDAO = exports.DeleteObjectDAO = exports.UpdatePropertyValueDAO = exports.AddObjectPropertyDAO = exports.GetObjectInfoDAO = exports.GetObjectDAO = void 0;
+exports.SearchByObjectNameDAO = exports.ExportDataDAO = exports.InsertObjectExcelDAO = exports.GetListPropertyByObjTypeIDDAO = exports.InsertObjectDAO = exports.DeleteObjectDAO = exports.UpdatePropertyValueDAO = exports.AddObjectPropertyDAO = exports.GetObjectInfoDAO = exports.GetObjectDAO = void 0;
 var Common_1 = require("../Utils/Common");
 var mysql_1 = __importDefault(require("mysql"));
 //Update multiple rows in mysql: https://stackoverflow.com/questions/3432/multiple-updates-in-mysql
@@ -65,7 +65,7 @@ exports.GetObjectDAO = GetObjectDAO;
 var GetObjectInfoDAO = function (obj_id) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {
-                var SQL_QUERY = "SELECT a.*, b.*, c.PRO_VALUE, c.CREATED_AT, c.UPDATED_AT, d.RULE_REGEX FROM object a, property b, obj_pro c, rule d WHERE a.OBJ_ID = ? AND b.PRO_ID = c.PRO_ID AND a.OBJ_ID = c.OBJ_ID AND b.RULE_ID = d.RULE_ID";
+                var SQL_QUERY = "SELECT a.*, b.*, c.PRO_VALUE, c.CREATED_AT, c.UPDATED_AT, d.RULE_NAME, d.RULE_REGEX FROM object a, property b, obj_pro c, rule d WHERE a.OBJ_ID = ? AND b.PRO_ID = c.PRO_ID AND a.OBJ_ID = c.OBJ_ID AND b.RULE_ID = d.RULE_ID";
                 var sql = Common_1.connection.query(SQL_QUERY, [obj_id], function (err, result, fields) {
                     if (err) {
                         reject(err);
@@ -302,3 +302,19 @@ var ExportDataDAO = function (obj_type_id) {
     });
 };
 exports.ExportDataDAO = ExportDataDAO;
+var SearchByObjectNameDAO = function (obj_name, obj_type_id) {
+    return new Promise(function (resolve, reject) {
+        var SQL_QUERY = "SELECT * FROM object WHERE OBJ_NAME LIKE ? AND OBJ_TYPE_ID = ?";
+        var sql = Common_1.connection.query(SQL_QUERY, ["%" + obj_name + "%", obj_type_id], function (e, r) {
+            if (e) {
+                console.log("============== SearchByObjectName - SQL ==============");
+                console.log(sql);
+                reject(e);
+            }
+            else {
+                resolve(r);
+            }
+        }).sql;
+    });
+};
+exports.SearchByObjectNameDAO = SearchByObjectNameDAO;

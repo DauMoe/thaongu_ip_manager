@@ -18,4 +18,5 @@ ObjectRouter.post("/get_excel_template", Common_1.AuthenticationUser, ObjectServ
 ObjectRouter.post("/get_obj_type_template", Common_1.AuthenticationUser, ObjectService_1.GetListObjectTypeExcelTemplate);
 ObjectRouter.post("/insert_object_excel", (0, multiparty_express_1.default)(), Common_1.AuthenticationUser, ObjectService_1.InsertObjectExcel);
 ObjectRouter.post("/export_data", Common_1.AuthenticationUser, ObjectService_1.ExportData);
+ObjectRouter.post("/search", Common_1.AuthenticationUser, ObjectService_1.SearchByObjectName);
 exports.default = ObjectRouter;

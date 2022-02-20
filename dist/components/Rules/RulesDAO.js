@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteRuleDAO = exports.UpdateRuleDAO = exports.InsertRule = exports.GetListRuleDAO = void 0;
+exports.SearchByRuleNameDAO = exports.DeleteRuleDAO = exports.UpdateRuleDAO = exports.InsertRule = exports.GetListRuleDAO = void 0;
 var Common_1 = require("../Utils/Common");
 var mysql_1 = __importDefault(require("mysql"));
 var GetListRuleDAO = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -141,3 +141,19 @@ var DeleteRuleDAO = function (rule_id) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.DeleteRuleDAO = DeleteRuleDAO;
+var SearchByRuleNameDAO = function (rule_name) {
+    return new Promise(function (resolve, reject) {
+        var SQL_QUERY = "SELECT * FROM rule WHERE RULE_NAME LIKE ?";
+        var sql = Common_1.connection.query(SQL_QUERY, ["%" + rule_name + "%"], function (e, r) {
+            if (e) {
+                console.log("============== SearchByRuleNameDAO - SQL ==============");
+                console.log(sql);
+                reject(e);
+            }
+            else {
+                resolve(r);
+            }
+        }).sql;
+    });
+};
+exports.SearchByRuleNameDAO = SearchByRuleNameDAO;
