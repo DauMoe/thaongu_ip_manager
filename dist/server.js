@@ -8,6 +8,7 @@ var RulesRouter_1 = __importDefault(require("./components/Rules/RulesRouter"));
 var ObjectTypeRouter_1 = __importDefault(require("./components/ObjectType/ObjectTypeRouter"));
 var ObjectRouter_1 = __importDefault(require("./components/Object/ObjectRouter"));
 var PropertyRouter_1 = __importDefault(require("./components/Property/PropertyRouter"));
+var Common_1 = require("./components/Utils/Common");
 var https = require("https");
 var http = require("http");
 var fs = require("fs");
@@ -36,6 +37,9 @@ app.use(express.urlencoded());
 app.get("/*", function (req, resp) {
     resp.sendFile(path.join(__dirname, "build", "index.html"));
 });
+if (!fs.existsSync(Common_1.REPORT_PATH)) {
+    fs.mkdirSync(Common_1.REPORT_PATH, { recursive: true });
+}
 /* API */
 app.use("/rules", RulesRouter_1.default);
 app.use("/obj_type", ObjectTypeRouter_1.default);

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DELETE_FILE_TIMEOUT = exports.GetCellNameByIndex = exports.ConvertTimeStamp2String = exports._EscapeReg = exports.query = exports.connection = exports.connectionPool = exports.AuthenticationUser = exports.getJSONObject = exports.getJSONArray = exports.getSubArray = exports.getNumberArray = exports.getStringArray = exports.getNumber = exports.getString = exports.YYYY_MM_DD_Reg = void 0;
+exports.REPORT_PATH = exports.DELETE_FILE_TIMEOUT = exports.GetCellNameByIndex = exports.ConvertTimeStamp2String = exports._EscapeReg = exports.query = exports.connection = exports.connectionPool = exports.AuthenticationUser = exports.getJSONObject = exports.getJSONArray = exports.getSubArray = exports.getNumberArray = exports.getStringArray = exports.getNumber = exports.getString = exports.YYYY_MM_DD_Reg = void 0;
 var mysql_1 = __importDefault(require("mysql"));
 var util_1 = __importDefault(require("util"));
 var _MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Sep"];
@@ -209,3 +209,4 @@ var GetCellNameByIndex = function (cols_index, rows_index, get_list_cell_name) {
 };
 exports.GetCellNameByIndex = GetCellNameByIndex;
 exports.DELETE_FILE_TIMEOUT = 1000 * 30; //30s
+exports.REPORT_PATH = "asset/report";

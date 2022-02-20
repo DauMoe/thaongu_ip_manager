@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {C201Resp, SuccessResp} from "../Utils/API_RESPONSE";
-import {getJSONArray, getNumber, getNumberArray, getString, GetCellNameByIndex, DELETE_FILE_TIMEOUT} from "../Utils/Common";
+import {getJSONArray, getNumber, getNumberArray, getString, GetCellNameByIndex, DELETE_FILE_TIMEOUT, REPORT_PATH} from "../Utils/Common";
 import {
     AddObjectPropertyDAO,
     DeleteObjectDAO,
@@ -262,7 +262,7 @@ export const GetCreateExcelTemplate = async(req: Request, resp: Response) => {
         sheet.getCell(`${list_cell[0]}`).value = "Create object by Excel";
 
         /**==================== Write Excel File Area ====================*/
-        let file_path: string = `asset/report/${new Date().getTime()}_create_object.xlsx`;
+        let file_path: string = `${REPORT_PATH}/${new Date().getTime()}_create_object.xlsx`;
         await workbook.xlsx.writeFile(file_path);
         SuccessResp(resp, file_path);
         setTimeout(() => {
@@ -456,7 +456,7 @@ export const ExportData = async(req: Request, resp: Response) => {
             }
             sheet.addRow(t);
         }
-        let filePath: string = `asset/report/${new Date().getTime()}_list_object.xlsx`;
+        let filePath: string = `${REPORT_PATH}/${new Date().getTime()}_list_object.xlsx`;
         await wb.xlsx.writeFile(filePath);
         setTimeout(() => {
             fs.unlinkSync(filePath);

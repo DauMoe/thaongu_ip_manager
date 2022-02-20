@@ -394,7 +394,7 @@ var GetCreateExcelTemplate = function (req, resp) { return __awaiter(void 0, voi
                 list_cell = (0, Common_1.GetCellNameByIndex)(list_pro_name_1.length, 1, true);
                 sheet_1.mergeCells(list_cell[0] + ":" + list_cell[list_cell.length - 1]);
                 sheet_1.getCell("" + list_cell[0]).value = "Create object by Excel";
-                file_path_1 = "asset/report/" + new Date().getTime() + "_create_object.xlsx";
+                file_path_1 = Common_1.REPORT_PATH + "/" + new Date().getTime() + "_create_object.xlsx";
                 return [4 /*yield*/, workbook.xlsx.writeFile(file_path_1)];
             case 4:
                 _a.sent();
@@ -643,7 +643,7 @@ var ExportData = function (req, resp) { return __awaiter(void 0, void 0, void 0,
                     }
                     sheet.addRow(t);
                 }
-                filePath_1 = "asset/report/" + new Date().getTime() + "_list_object.xlsx";
+                filePath_1 = Common_1.REPORT_PATH + "/" + new Date().getTime() + "_list_object.xlsx";
                 return [4 /*yield*/, wb.xlsx.writeFile(filePath_1)];
             case 4:
                 _h.sent();

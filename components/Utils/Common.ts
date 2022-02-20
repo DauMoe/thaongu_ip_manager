@@ -183,3 +183,4 @@ export const GetCellNameByIndex = (cols_index: number, rows_index: number, get_l
 }
 
 export const DELETE_FILE_TIMEOUT: number = 1000 * 30;//30s
+export const REPORT_PATH: string = "asset/report";

@@ -5,6 +5,7 @@ import ObjectTypeRouter from "./components/ObjectType/ObjectTypeRouter";
 import ObjectRouter from "./components/Object/ObjectRouter";
 import PropertyRouter from "./components/Property/PropertyRouter";
 import mysql from "mysql";
+import { REPORT_PATH } from "./components/Utils/Common";
 
 const https                 = require("https");
 const http                  = require("http");
@@ -39,6 +40,10 @@ app.use(express.urlencoded());
 app.get("/*", function (req: Request, resp: Response) {
     resp.sendFile(path.join(__dirname, "build", "index.html"));
 });
+
+if (!fs.existsSync(REPORT_PATH)) {
+    fs.mkdirSync(REPORT_PATH, { recursive: true });
+}
 
 /* API */
 app.use("/rules",       Rules_Router);
