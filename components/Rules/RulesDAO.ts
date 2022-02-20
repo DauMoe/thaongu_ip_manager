@@ -50,10 +50,10 @@ export const UpdateRuleDAO = async(NewRule: Rule) => {
 
 export const DeleteRuleDAO = async(rule_id: Number) => {
     return new Promise(async (resolve, reject) => {
-        let SQL_QUERY: string   = "SELECT * FROM property WHERE RULE_ID = ?";
+        let SQL_QUERY: string = "SELECT * FROM property WHERE RULE_ID = ?";
         try {
             // @ts-ignore
-            let result: any[]   = await query(mysql.format(SQL_QUERY, [rule_id]));
+            let result: any[] = await query(mysql.format(SQL_QUERY, [rule_id]));
             if (result.length > 0) {
                 let errMsg = "";
                 errMsg = "CAN NOT delete because ";
@@ -72,5 +72,20 @@ export const DeleteRuleDAO = async(rule_id: Number) => {
         } catch (e) {
             reject(e);
         }
+    });
+}
+
+export const SearchByRuleNameDAO = (rule_name: string) => {
+    return new Promise((resolve, reject) => {
+        let SQL_QUERY = "SELECT * FROM rule WHERE RULE_NAME LIKE ?";
+        let {sql}  = connection.query(SQL_QUERY, [`%${rule_name}%`], function(e, r) {
+            if (e) {
+                console.log("============== SearchByRuleNameDAO - SQL ==============");
+                console.log(sql);
+                reject(e);
+            } else {
+                resolve(r);
+            }
+        });
     });
 }

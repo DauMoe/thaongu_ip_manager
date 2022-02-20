@@ -10,6 +10,7 @@ import {
     GetObjectInfo,
     InsertObject,
     InsertObjectExcel,
+    SearchByObjectName,
     UpdatePropertyValue
 } from "./ObjectService";
 import multiparty from "multiparty-express";
@@ -26,5 +27,6 @@ ObjectRouter.post("/get_excel_template", AuthenticationUser, GetCreateExcelTempl
 ObjectRouter.post("/get_obj_type_template", AuthenticationUser, GetListObjectTypeExcelTemplate);
 ObjectRouter.post("/insert_object_excel", multiparty(), AuthenticationUser, InsertObjectExcel);
 ObjectRouter.post("/export_data", AuthenticationUser, ExportData);
+ObjectRouter.post("/search", AuthenticationUser, SearchByObjectName);
 
 export default ObjectRouter;

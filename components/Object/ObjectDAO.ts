@@ -21,7 +21,7 @@ export const GetObjectDAO = async(obj_type_id: Number) => {
 
 export const GetObjectInfoDAO = async(obj_id: Number) => {
     return new Promise(function (resolve, reject) {
-        let SQL_QUERY = "SELECT a.*, b.*, c.PRO_VALUE, c.CREATED_AT, c.UPDATED_AT, d.RULE_REGEX FROM object a, property b, obj_pro c, rule d WHERE a.OBJ_ID = ? AND b.PRO_ID = c.PRO_ID AND a.OBJ_ID = c.OBJ_ID AND b.RULE_ID = d.RULE_ID";
+        let SQL_QUERY = "SELECT a.*, b.*, c.PRO_VALUE, c.CREATED_AT, c.UPDATED_AT, d.RULE_NAME, d.RULE_REGEX FROM object a, property b, obj_pro c, rule d WHERE a.OBJ_ID = ? AND b.PRO_ID = c.PRO_ID AND a.OBJ_ID = c.OBJ_ID AND b.RULE_ID = d.RULE_ID";
         let {sql} = connection.query(SQL_QUERY, [obj_id], function (err, result, fields) {
             if (err) {
                 reject(err);
@@ -200,4 +200,19 @@ export const ExportDataDAO = (obj_type_id: Number) => {
            }
         });
     })
+}
+
+export const SearchByObjectNameDAO = (obj_name: string, obj_type_id: Number) => {
+    return new Promise((resolve, reject) => {
+       let SQL_QUERY = "SELECT * FROM object WHERE OBJ_NAME LIKE ? AND OBJ_TYPE_ID = ?";
+       let {sql}  = connection.query(SQL_QUERY, [`%${obj_name}%`, obj_type_id], function(e, r) {
+           if (e) {
+               console.log("============== SearchByObjectName - SQL ==============");
+               console.log(sql);
+               reject(e);
+           } else {
+               resolve(r);
+           }
+       });
+    });
 }

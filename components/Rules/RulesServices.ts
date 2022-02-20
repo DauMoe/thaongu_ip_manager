@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {C201Resp, SuccessResp} from "../Utils/API_RESPONSE";
 import LogConfig from "../LogConfig";
 import {getNumber, getString} from "../Utils/Common";
-import {DeleteRuleDAO, GetListRuleDAO, InsertRule, UpdateRuleDAO} from "./RulesDAO";
+import {DeleteRuleDAO, GetListRuleDAO, InsertRule, UpdateRuleDAO, SearchByRuleNameDAO} from "./RulesDAO";
 import {Rule} from "../Utils/Interfaces";
 import moment from "moment";
 
@@ -19,6 +19,40 @@ export const GetListRules = async (req: Request, resp: Response): Promise<void> 
     try {
         // @ts-ignore
         let result: Rule[] = await GetListRuleDAO();
+        let respResult = [];
+        for (let i of result) {
+            respResult.push({
+                "rule_id": i.RULE_ID            === null ? -1 : i.RULE_ID,
+                "rule_name": i.RULE_NAME        === null ? "" : i.RULE_NAME,
+                "rule_desc": i.RULE_DESC        === null ? "" : i.RULE_DESC,
+                "rule_regex": i.RULE_REGEX      === null ? "" : i.RULE_REGEX,
+                "created_at": i.CREATED_AT      === null ? "" : moment(i.CREATED_AT).format("DD/MM/YYYY HH:mm:ss"),
+                "updated_at": i.UPDATED_AT      === null ? "" : moment(i.UPDATED_AT).format("DD/MM/YYYY HH:mm:ss")
+            });
+        }
+        SuccessResp(resp, respResult);
+    } catch (e) {
+        //@ts-ignore
+        if (e.hasOwnProperty("message")) {
+            //@ts-ignore
+            C201Resp(resp, e.message);
+            return;
+        }
+        //@ts-ignore
+        if (e.hasOwnProperty("sqlMessage")) {
+            //@ts-ignore
+            C201Resp(resp, e.sqlMessage);
+            return;
+        }
+    }
+}
+
+export const SearchByRuleName = async (req: Request, resp: Response): Promise<void> => {
+    let reqData = req.body;
+    try {
+        let rule_name: string = getString(reqData, "rule_name").toUpperCase();
+        // @ts-ignore
+        let result: any[] = await SearchByRuleNameDAO(rule_name);
         let respResult = [];
         for (let i of result) {
             respResult.push({

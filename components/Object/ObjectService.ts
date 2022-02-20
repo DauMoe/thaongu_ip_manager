@@ -10,7 +10,8 @@ import {
     InsertObjectDAO,
     UpdatePropertyValueDAO,
     InsertObjectExcelDAO,
-    ExportDataDAO
+    ExportDataDAO,
+    SearchByObjectNameDAO
 } from "./ObjectDAO";
 import moment from "moment";
 import * as path from "path";
@@ -65,6 +66,7 @@ export const GetObjectInfo = async(req: Request, resp: Response) => {
                 "obj_type_id": i.OBJ_TYPE_ID    === null ? -1 : i.OBJ_TYPE_ID,
                 "pro_id": i.PRO_ID              === null ? -1 : i.PRO_ID,
                 "pro_name": i.PRO_NAME          === null ? "" : i.PRO_NAME,
+                "rule_name": i.RULE_NAME        === null ? "" : i.RULE_NAME,
                 "pro_desc": i.PRO_DESC          === null ? "" : i.PRO_DESC,
                 "pro_value": i.PRO_VALUE        === null ? "" : i.PRO_VALUE,
                 "rule_id": i.RULE_ID            === null ? -1 : i.RULE_ID,
@@ -465,6 +467,39 @@ export const ExportData = async(req: Request, resp: Response) => {
             code: 202,
             msg: filePath
         })
+    } catch (e) {
+        //@ts-ignore
+        if (e.hasOwnProperty("message")) {
+            //@ts-ignore
+            C201Resp(resp, e.message);
+            return;
+        }
+        //@ts-ignore
+        if (e.hasOwnProperty("sqlMessage")) {
+            //@ts-ignore
+            C201Resp(resp, e.sqlMessage);
+            return;
+        }
+    }
+}
+
+export const SearchByObjectName = async(req: Request, resp: Response) => {
+    let reqData = req.body;
+    try {
+        let obj_name: string    = getString(reqData, "obj_name").toUpperCase();
+        let obj_type_id: Number = getNumber(reqData, "obj_type_id");
+        // @ts-ignore
+        let result: any[]       = await SearchByObjectNameDAO(obj_name, obj_type_id);
+        let respResult          = [];
+        for (let i of result) {
+            respResult.push({
+                "obj_id": i.OBJ_ID              === null ? -1 : i.OBJ_ID,
+                "obj_name": i.OBJ_NAME          === null ? "" : i.OBJ_NAME,
+                "obj_desc": i.OBJ_DESC          === null ? "" : i.OBJ_DESC,
+                "obj_type_id": i.OBJ_TYPE_ID    === null ? -1 : i.OBJ_TYPE_ID
+            });
+        }
+        SuccessResp(resp, respResult);
     } catch (e) {
         //@ts-ignore
         if (e.hasOwnProperty("message")) {
