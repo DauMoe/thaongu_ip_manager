@@ -458,7 +458,9 @@ export const ExportData = async(req: Request, resp: Response) => {
         }
         let filePath: string = `asset/report/${new Date().getTime()}_list_object.xlsx`;
         await wb.xlsx.writeFile(filePath);
-        // fs.unlinkSync(filePath);
+        setTimeout(() => {
+            fs.unlinkSync(filePath);
+        }, DELETE_FILE_TIMEOUT);
         resp.json({
             code: 202,
             msg: filePath

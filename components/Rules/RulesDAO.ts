@@ -1,6 +1,7 @@
 import {DB_RESPONSE, Rule} from "../Utils/Interfaces";
 import {DB_RESP} from "../Utils/API_RESPONSE";
-import {connection} from "../Utils/Common";
+import {connection, query} from "../Utils/Common";
+import mysql from "mysql";
 
 export const GetListRuleDAO = async() => {
     return new Promise(function (resolve, reject) {
@@ -47,17 +48,29 @@ export const UpdateRuleDAO = async(NewRule: Rule) => {
     });
 }
 
-export const DeleteRuleDAO = async(NewRule: Rule) => {
-    return new Promise(function (resolve, reject) {
-        let SQL_QUERY = "DELETE FROM RULE WHERE RULE_ID = ?";
-        let {sql} = connection.query(SQL_QUERY, [NewRule.RULE_ID], function (err, result, fields) {
-            if (err) {
-                reject(err);
-                console.log("============== DeleteRuleDAO - SQL =============");
-                console.log(sql);
+export const DeleteRuleDAO = async(rule_id: Number) => {
+    return new Promise(async (resolve, reject) => {
+        let SQL_QUERY: string   = "SELECT * FROM property WHERE RULE_ID = ?";
+        try {
+            // @ts-ignore
+            let result: any[]   = await query(mysql.format(SQL_QUERY, [rule_id]));
+            if (result.length > 0) {
+                let errMsg = "";
+                errMsg = "CAN NOT delete because ";
+                for (let i of result) {
+                    console.log(i.PRO_NAME);
+                    errMsg += `'${i.PRO_NAME}', `;
+                }
+                errMsg = errMsg.substring(0, errMsg.length - 2);
+                errMsg += " contain this rule";
+                resolve(errMsg);
             } else {
-                resolve("Thành công");
+                SQL_QUERY = "DELETE FROM rule WHERE RULE_ID = ?";
+                await query(mysql.format(SQL_QUERY, [rule_id]));
+                resolve(true);
             }
-        });
+        } catch (e) {
+            reject(e);
+        }
     });
 }

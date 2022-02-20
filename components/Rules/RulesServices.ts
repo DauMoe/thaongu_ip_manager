@@ -121,17 +121,13 @@ export const UpdateRule = async (req: Request, resp: Response) => {
 export const DeleteRule = async (req: Request, resp: Response) => {
     let reqData = req.body;
     try {
-        let rule_id:    Number = getNumber(reqData, "rule_id");
-        let NewRuleData: Rule  = {
-            RULE_ID: rule_id,
-            RULE_NAME: "",
-            RULE_DESC: "",
-            RULE_REGEX: "",
-            CREATED_AT: "",
-            UPDATED_AT: ""
+        let rule_id:    Number  = getNumber(reqData, "rule_id");
+        let result              = await DeleteRuleDAO(rule_id);
+        if (result !== true) {
+            C201Resp(resp, result);
+        } else {
+            SuccessResp(resp, "Successfully!");
         }
-        let result = await DeleteRuleDAO(NewRuleData);
-        SuccessResp(resp, result);
     } catch (e) {
         console.log(e);
         //@ts-ignore
