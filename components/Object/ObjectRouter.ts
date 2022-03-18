@@ -1,5 +1,4 @@
 import express from "express";
-import {AuthenticationUser} from "../Utils/Common";
 import {
     AddObjectProperty,
     DeleteObject,
@@ -14,19 +13,20 @@ import {
     UpdatePropertyValue
 } from "./ObjectService";
 import multiparty from "multiparty-express";
+import {CheckAdminRole, CheckAuthMiddleWare } from "../Utils/Authentication";
 
 const ObjectRouter = express.Router();
 
-ObjectRouter.post("/list", AuthenticationUser, GetObject);
-ObjectRouter.post("/get_object_info", AuthenticationUser, GetObjectInfo);
-ObjectRouter.post("/add_property_to_object", AuthenticationUser, AddObjectProperty);
-ObjectRouter.post("/update_property", AuthenticationUser, UpdatePropertyValue);
-ObjectRouter.post("/delete", AuthenticationUser, DeleteObject);
-ObjectRouter.post("/insert", AuthenticationUser, InsertObject);
-ObjectRouter.post("/get_excel_template", AuthenticationUser, GetCreateExcelTemplate);
-ObjectRouter.post("/get_obj_type_template", AuthenticationUser, GetListObjectTypeExcelTemplate);
-ObjectRouter.post("/insert_object_excel", multiparty(), AuthenticationUser, InsertObjectExcel);
-ObjectRouter.post("/export_data", AuthenticationUser, ExportData);
-ObjectRouter.post("/search", AuthenticationUser, SearchByObjectName);
+ObjectRouter.post("/list", CheckAuthMiddleWare, GetObject);
+ObjectRouter.post("/get_object_info", CheckAuthMiddleWare, GetObjectInfo);
+ObjectRouter.post("/add_property_to_object", CheckAuthMiddleWare, CheckAdminRole, AddObjectProperty);
+ObjectRouter.post("/update_property", CheckAuthMiddleWare, CheckAdminRole, UpdatePropertyValue);
+ObjectRouter.post("/delete", CheckAuthMiddleWare, CheckAdminRole, DeleteObject);
+ObjectRouter.post("/insert", CheckAuthMiddleWare, CheckAdminRole, InsertObject);
+ObjectRouter.post("/get_excel_template", CheckAuthMiddleWare, GetCreateExcelTemplate);
+ObjectRouter.post("/get_obj_type_template", CheckAuthMiddleWare, GetListObjectTypeExcelTemplate);
+ObjectRouter.post("/insert_object_excel", multiparty(), CheckAuthMiddleWare, CheckAdminRole, InsertObjectExcel);
+ObjectRouter.post("/export_data", CheckAuthMiddleWare, ExportData);
+ObjectRouter.post("/search", CheckAuthMiddleWare, SearchByObjectName);
 
 export default ObjectRouter;

@@ -6,6 +6,7 @@ import ObjectRouter from "./components/Object/ObjectRouter";
 import PropertyRouter from "./components/Property/PropertyRouter";
 import mysql from "mysql";
 import { REPORT_PATH } from "./components/Utils/Common";
+import UserRouter from "./components/User/UserRouter";
 
 const https                 = require("https");
 const http                  = require("http");
@@ -46,6 +47,7 @@ if (!fs.existsSync(REPORT_PATH)) {
 }
 
 /* API */
+app.use("/user",        UserRouter);
 app.use("/rules",       Rules_Router);
 app.use("/obj_type",    ObjectTypeRouter);
 app.use("/obj",         ObjectRouter);

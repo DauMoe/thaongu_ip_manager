@@ -4,6 +4,8 @@ import util from "util";
 
 const _MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Sep"];
 
+export const SALT_ROUNDS :number = 10;
+
 /*Date format reg: https://www.codegrepper.com/code-examples/javascript/regex+date+format+yyyy-mm-dd*/
 export const YYYY_MM_DD_Reg = new RegExp('^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$');
 
@@ -97,8 +99,11 @@ export const getJSONObject = (data: any, field: string, isRequired: boolean = tr
     return msg;
 }
 
-export const AuthenticationUser = (req: Request, resp: Response, next: NextFunction) => {
-    next();
+export const getBoolean = (data: any, field: string, isRequired: boolean = true): boolean => {
+    CheckInputType(data, field, isRequired);
+    let msg: any = data[`${field}`];
+    if (msg === undefined && !isRequired) return false;
+    return Boolean(msg);
 }
 
 //https://stackoverflow.com/questions/41442820/undefined-connection-during-database-pooling-in-node-js
