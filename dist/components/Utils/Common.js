@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.REPORT_PATH = exports.DELETE_FILE_TIMEOUT = exports.GetCellNameByIndex = exports.ConvertTimeStamp2String = exports._EscapeReg = exports.query = exports.connection = exports.connectionPool = exports.AuthenticationUser = exports.getJSONObject = exports.getJSONArray = exports.getSubArray = exports.getNumberArray = exports.getStringArray = exports.getNumber = exports.getString = exports.YYYY_MM_DD_Reg = void 0;
+exports.REPORT_PATH = exports.DELETE_FILE_TIMEOUT = exports.GetCellNameByIndex = exports.ConvertTimeStamp2String = exports._EscapeReg = exports.query = exports.connection = exports.connectionPool = exports.getBoolean = exports.getJSONObject = exports.getJSONArray = exports.getSubArray = exports.getNumberArray = exports.getStringArray = exports.getNumber = exports.getString = exports.YYYY_MM_DD_Reg = exports.SALT_ROUNDS = void 0;
 var mysql_1 = __importDefault(require("mysql"));
 var util_1 = __importDefault(require("util"));
 var _MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Sep"];
+exports.SALT_ROUNDS = 10;
 /*Date format reg: https://www.codegrepper.com/code-examples/javascript/regex+date+format+yyyy-mm-dd*/
 exports.YYYY_MM_DD_Reg = new RegExp('^\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01])$');
 /*  Get and check function  */
@@ -123,10 +124,15 @@ var getJSONObject = function (data, field, isRequired) {
     return msg;
 };
 exports.getJSONObject = getJSONObject;
-var AuthenticationUser = function (req, resp, next) {
-    next();
+var getBoolean = function (data, field, isRequired) {
+    if (isRequired === void 0) { isRequired = true; }
+    CheckInputType(data, field, isRequired);
+    var msg = data["" + field];
+    if (msg === undefined && !isRequired)
+        return false;
+    return Boolean(msg);
 };
-exports.AuthenticationUser = AuthenticationUser;
+exports.getBoolean = getBoolean;
 //https://stackoverflow.com/questions/41442820/undefined-connection-during-database-pooling-in-node-js
 var pool = mysql_1.default.createPool({
     connectionLimit: Number.parseInt(process.env.MAX_POOL_LIMIT) || 10,

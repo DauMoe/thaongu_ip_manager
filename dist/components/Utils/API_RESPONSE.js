@@ -19,7 +19,7 @@ var MissingField = function (resp, field) {
 exports.MissingField = MissingField;
 var SuccessResp = function (resp, data) {
     if (data === undefined) {
-        (0, exports.RespCustomCode)(resp, 200, "Thành công");
+        (0, exports.RespCustomCode)(resp, 200, "Successful!");
     }
     else {
         (0, exports.RespCustomCode)(resp, 200, data);
