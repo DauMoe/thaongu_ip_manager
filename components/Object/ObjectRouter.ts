@@ -13,7 +13,7 @@ import {
     UpdatePropertyValue
 } from "./ObjectService";
 import multiparty from "multiparty-express";
-import {CheckAdminRole, CheckAuthMiddleWare } from "../Utils/Authentication";
+import {CheckAdminRole, CheckAuthMiddleWare, CheckAuthMiddleWareMultiparty } from "../Utils/Authentication";
 
 const ObjectRouter = express.Router();
 
@@ -25,7 +25,7 @@ ObjectRouter.post("/delete", CheckAuthMiddleWare, CheckAdminRole, DeleteObject);
 ObjectRouter.post("/insert", CheckAuthMiddleWare, CheckAdminRole, InsertObject);
 ObjectRouter.post("/get_excel_template", CheckAuthMiddleWare, GetCreateExcelTemplate);
 ObjectRouter.post("/get_obj_type_template", CheckAuthMiddleWare, GetListObjectTypeExcelTemplate);
-ObjectRouter.post("/insert_object_excel", multiparty(), CheckAuthMiddleWare, CheckAdminRole, InsertObjectExcel);
+ObjectRouter.post("/insert_object_excel", multiparty(), CheckAuthMiddleWareMultiparty, CheckAdminRole, InsertObjectExcel);
 ObjectRouter.post("/export_data", CheckAuthMiddleWare, ExportData);
 ObjectRouter.post("/search", CheckAuthMiddleWare, SearchByObjectName);
 

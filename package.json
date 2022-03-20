@@ -26,6 +26,7 @@
     "exceljs": "^4.3.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
     "multiparty-express": "^0.1.9",
     "mysql": "^2.18.1",

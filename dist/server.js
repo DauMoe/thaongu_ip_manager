@@ -9,6 +9,7 @@ var ObjectTypeRouter_1 = __importDefault(require("./components/ObjectType/Object
 var ObjectRouter_1 = __importDefault(require("./components/Object/ObjectRouter"));
 var PropertyRouter_1 = __importDefault(require("./components/Property/PropertyRouter"));
 var Common_1 = require("./components/Utils/Common");
+var UserRouter_1 = __importDefault(require("./components/User/UserRouter"));
 var https = require("https");
 var http = require("http");
 var fs = require("fs");
@@ -41,6 +42,7 @@ if (!fs.existsSync(Common_1.REPORT_PATH)) {
     fs.mkdirSync(Common_1.REPORT_PATH, { recursive: true });
 }
 /* API */
+app.use("/user", UserRouter_1.default);
 app.use("/rules", RulesRouter_1.default);
 app.use("/obj_type", ObjectTypeRouter_1.default);
 app.use("/obj", ObjectRouter_1.default);

@@ -18,7 +18,7 @@ export const MissingField: Function = (resp: Response, field: string): void => {
 
 export const SuccessResp: Function = (resp: Response, data?: any): void => {
     if (data === undefined) {
-        RespCustomCode(resp, 200, "Thành công");
+        RespCustomCode(resp, 200, "Successful!");
     } else {
         RespCustomCode(resp, 200, data);
     }
