@@ -99,7 +99,8 @@ var UpdatePropertyDAO = function (pro_id, pro_name, pro_desc, rule_id, list_obj_
                         reject(err1);
                     }
                     else {
-                        if (result1.length > 0) {
+                        // if (result1.length > 0) {
+                        if (false) {
                             var msg_1 = "";
                             result1.map(function (item, index) {
                                 msg_1 += "'" + item.OBJ_NAME + "'";
@@ -123,9 +124,6 @@ var UpdatePropertyDAO = function (pro_id, pro_name, pro_desc, rule_id, list_obj_
                             var p3 = Common_1.connection.query(UPDATE_PROPERTY, [pro_name, pro_desc, rule_id, pro_id]);
                             Promise.all([p1, p2, p3])
                                 .then(function (response) {
-                                // console.log(p1.sql);
-                                // console.log(p2.sql);
-                                // console.log(p3.sql);
                                 resolve(response);
                             })
                                 .catch(function (e) {

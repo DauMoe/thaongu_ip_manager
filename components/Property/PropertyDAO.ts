@@ -51,7 +51,8 @@ export const UpdatePropertyDAO = async(pro_id: Number, pro_name: string, pro_des
                 console.log(sql);
                 reject(err1);
             } else {
-                if (result1.length > 0) {
+                // if (result1.length > 0) {
+                if (false) {
                     let msg = "";
                     result1.map(function(item: any, index: number) {
                         msg += `'${item.OBJ_NAME}'`;
@@ -75,9 +76,6 @@ export const UpdatePropertyDAO = async(pro_id: Number, pro_name: string, pro_des
 
                     Promise.all([p1, p2, p3])
                         .then(response => {
-                            // console.log(p1.sql);
-                            // console.log(p2.sql);
-                            // console.log(p3.sql);
                             resolve(response);
                         })
                         .catch(e => {
